@@ -11,7 +11,8 @@ import config from '@/config';
 // It automatically redirects user to callbackUrl (config.auth.callbackUrl) after login, which is normally a private page for users to manage their accounts.
 // If the user is already logged in, it will show their profile picture & redirect them to callbackUrl immediately.
 const ButtonSignin = ({
-  text = 'Account',
+  text = 'Get started',
+  extraStyle,
 }: {
   text?: string;
   extraStyle?: string;
@@ -35,19 +36,18 @@ const ButtonSignin = ({
     return (
       <Link
         href={config.auth.callbackUrl}
-        // className={`btn ${extraStyle ? extraStyle : ""}`}
-        className='btn btn-sm bg-white text-sm'>
+        className={`btn ${extraStyle ? extraStyle : ''}`}>
         {user?.user_metadata?.avatar_url ? (
           <img
             src={user?.user_metadata?.avatar_url}
             alt={user?.user_metadata?.name || 'Account'}
-            className='w-5 h-5 rounded-full shrink-0'
+            className='w-6 h-6 rounded-full shrink-0'
             referrerPolicy='no-referrer'
             width={24}
             height={24}
           />
         ) : (
-          <span className='w-5 h-5 bg-base-300 flex justify-center items-center rounded-full shrink-0'>
+          <span className='w-6 h-6 bg-base-300 flex justify-center items-center rounded-full shrink-0'>
             {user?.user_metadata?.name?.charAt(0) || user?.email?.charAt(0)}
           </span>
         )}
@@ -58,26 +58,9 @@ const ButtonSignin = ({
 
   return (
     <Link
-      // className={`btn ${extraStyle ? extraStyle : ""}`}
-      // className='flex gap-2 p-2 mr-6 text-base bg-white hover:bg-gray-100 rounded-md '
-      className='btn btn-sm bg-white text-sm'
+      className={`btn ${extraStyle ? extraStyle : ''}`}
       href={config.auth.loginUrl}>
-      <svg
-        className='w-6 h-6'
-        fill='none'
-        strokeWidth={1.5}
-        stroke='currentColor'
-        viewBox='0 0 24 24'
-        xmlns='http://www.w3.org/2000/svg'
-        aria-hidden='true'>
-        <path
-          strokeLinecap='round'
-          strokeLinejoin='round'
-          d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
-        />
-      </svg>
-
-      <button>{text} </button>
+      {text}
     </Link>
   );
 };
