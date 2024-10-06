@@ -26,7 +26,7 @@ const Footer = () => {
               />
             </Link>
             <p className='mt-3 text-xs text-base-content/60'>
-              Practice USA F1 visa interview with VisaInterviewAI's AI Visa
+              Practice USA F1 visa interview with VisaInterviewAIs AI Visa
               officer and get instant and realistic feedback on mock inteviews
             </p>
             <p className='mt-4 text-xs text-base-content/60'>
