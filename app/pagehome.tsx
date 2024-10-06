@@ -3,12 +3,10 @@ import Header from '@/components/Header';
 // import ButtonSubmitYT from '@/components/ButtonSubmitYT';
 // import ChannelList from '@/components/ChannelList';
 import Navbar from '@/components/Navbar';
-import VisaInterviewThree from '@/components/core/visaInterviewThree';
-
 import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
 import VisaInterview from '@/components/core/visaInterview';
 
-export default function Dashboard() {
+export default function Home() {
   const baseInterviewQuestions = [
     {
       questionNumber: 1,
@@ -68,12 +66,7 @@ export default function Dashboard() {
           <div className='flex justify-between w-full'>
             <div className='flex flex-col w-full overflow-y-scroll'>
               {/* <ChannelList filter={'all'} /> */}
-
-              <VisaInterviewThree
-                baseInterviewQuestions={baseInterviewQuestions}
-              />
-
-              {/* <main className='flex max-w-5xl gap-6 flex-col p-4 w-full'>
+              <main className='flex max-w-5xl gap-6 flex-col p-4 w-full'>
                 <div className='flex flex-col justify-start items-start pt-4 text-base  xs:text-2xl sdm:text-2xl sm:gap-3 md:text-2xl p-1'>
                   <div className='font-semibold'>
                     Welcome <span>{'User'}</span>!
@@ -125,7 +118,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-              </main> */}
+              </main>
             </div>
 
             <div className=' hidden lg:block w-[300px] border-l px-4 cursor-pointer py-4'>

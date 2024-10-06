@@ -7,7 +7,7 @@ const Question = ({
   isSpeaking,
 }) => {
   return (
-    <div className='flex justify-between gap-2 border-b p-4'>
+    <div className='flex w-full justify-between gap-2 border-b p-5'>
       <div className='flex items-start gap-1.5 font-semibold sdm:items-center'>
         <div>Q{questionNumber}:</div>
         <div>{question}</div>

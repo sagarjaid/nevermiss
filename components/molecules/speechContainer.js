@@ -54,7 +54,7 @@ const SpeechContainer = ({
     stopTimer();
     resetTimer();
     timeoutRef.current = setTimeout(async () => {
-      let userResponse = transcript.text;
+      let userResponse = transcript;
       try {
         const resData1 = await callApi('/api/get-data', {
           method: 'POST',

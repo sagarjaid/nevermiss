@@ -7,6 +7,7 @@ import VisaInterview from '@/components/core/visaInterview';
 // import Footer from '@/components/atoms/footer';
 import { useApiCall } from '@/hooks/useApiCall';
 import Header from '@/components/Header';
+import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
 
 interface Question {
   questionNumber: number;
@@ -124,7 +125,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
           </Suspense>
 
           <main>
-            <div className='flex flex-col gap-4 items-center justify-center py-12'>
+            <div className='flex flex-col gap-4 items-center justify-center'>
               <VisaInterview baseInterviewQuestions={baseInterviewQuestions} />
             </div>
           </main>

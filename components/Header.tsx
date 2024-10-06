@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ButtonSignin from './ButtonSignin';
 import logo from '@/app/logo.png';
+
 import config from '@/config';
 import Navbar from './Navbar';
 import NavbarMobile from './NavbarMobile';
@@ -45,11 +46,10 @@ const Header = () => {
   }, [searchParams]);
 
   return (
-    <header className='border-b'>
+    <header className='w-full'>
       <nav
         className='flex items-center justify-between px-4 py-3 w-full'
         aria-label='Global'>
-        {/* Your logo/name on large screens */}
         <div className='flex lg:flex-1'>
           <Link
             className='flex items-center gap-2 shrink-0 '
@@ -58,13 +58,11 @@ const Header = () => {
             <Image
               src={logo}
               alt={`${config.appName} logo`}
-              className='w-[130px]'
-              placeholder='blur'
+              className='w-full'
               priority={true}
-              width={100}
-              height={50}
+              width={130}
+              height={70}
             />
-            {/* <span className="font-extrabold text-lg">buysellyt</span> */}
           </Link>
         </div>
         {/* Burger button to open menu on mobile */}
@@ -113,7 +111,7 @@ const Header = () => {
       {/* Mobile menu, show/hide based on menu state. */}
       <div className={`relative z-50 ${isOpen ? '' : 'hidden'}`}>
         <div
-          className={`fixed inset-y-0 right-0 z-10 w-full p-6 overflow-y-auto bg-base-200 sm:max-w-sm sm:ring-1 sm:ring-neutral/10 transform origin-right transition ease-in-out duration-300`}>
+          className={`fixed inset-y-0 right-0 z-10 w-full p-4 overflow-y-auto bg-base-200 sm:max-w-sm sm:ring-1 sm:ring-neutral/10 transform origin-right transition ease-in-out duration-300`}>
           {/* Your logo/name on small screens */}
           <div className='flex items-center justify-between'>
             <Link
@@ -123,13 +121,11 @@ const Header = () => {
               <Image
                 src={logo}
                 alt={`${config.appName} logo`}
-                className='w-[130px]'
-                placeholder='blur'
+                className='w-full'
                 priority={true}
-                width={100}
-                height={50}
+                width={130}
+                height={70}
               />
-              {/* <span className="font-extrabold text-lg">buysellyt</span> */}
             </Link>
             <button
               type='button'
@@ -239,7 +235,7 @@ const Header = () => {
               </div>
             </div> */}
 
-            <NavbarMobile />
+            {/* <NavbarMobile /> */}
 
             <div className='divider'></div>
             {/* Your CTA on small screens */}

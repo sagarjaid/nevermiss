@@ -11,7 +11,7 @@ import { useToggle } from '@/hooks/useToggle';
 // import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import useSpeechSynthesis from '@/hooks/useSpeechSynthesis';
 
-const VisaInterview = ({ baseInterviewQuestions }) => {
+const VisaInterviewThree = ({ baseInterviewQuestions }) => {
   const {
     officerToggle,
     feedbackToggle,
@@ -61,7 +61,7 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
 
   return (
     <div className='flex h-fit flex-col gap-4 rounded-xl p-4 sdm:flex-row'>
-      <div className='flex h-fit w-full flex-col rounded-lg border bg-white drop-shadow-xl sdm:w-[600px]'>
+      <div className='flex h-fit w-full flex-col rounded-lg border bg-white'>
         <Question
           questionNumber={
             baseInterviewQuestions[currentQuestionIndex].questionNumber
@@ -117,4 +117,4 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
   );
 };
 
-export default VisaInterview;
+export default VisaInterviewThree;
