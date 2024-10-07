@@ -192,7 +192,7 @@ const UserInfo = () => {
 
           <button
             className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
-            onClick={() => (window.location.href = '/dashboard')}>
+            onClick={() => (window.location.href = '/pricing')}>
             <svg
               className='w-5 h-5'
               fill='none'
