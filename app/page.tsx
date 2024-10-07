@@ -32,7 +32,7 @@ export default function Home() {
             </p>
 
             <a
-              href='/interview/91739730173'
+              href='/signin'
               className='flex gap-2 bg-white hover:bg-slate-50 p-2 px-3.5 border cursor-pointer border-black rounded-full'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -65,7 +65,7 @@ export default function Home() {
           </div>
 
           <a
-            href='/interview/91739730173'
+            href='/signin'
             className='flex justify-center items-center w-full'>
             <img
               src='/interview-cover.png'

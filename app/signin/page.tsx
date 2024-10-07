@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/libs/supabase/client';
-import { Provider } from '@supabase/supabase-js';
+import { Provider, User } from '@supabase/supabase-js';
 import toast from 'react-hot-toast';
 import config from '@/config';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,24 @@ export default function Login() {
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   const router = useRouter(); // Initialize the router
+
+  const [user, setUser] = useState<User>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setUser(user);
+    };
+
+    getUser();
+  }, [supabase]);
+
+  if (user) {
+    window.location.href = '/dash';
+  }
 
   const handleSignup = async (
     e: any,

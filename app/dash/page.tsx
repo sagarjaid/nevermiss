@@ -206,7 +206,7 @@ export default function Dashboard() {
                   </div>
                   <a
                     href='/pricing'
-                    className='border w-fit bg-white text-black border-white text-[9px] px-2 py-0.5 rounded-full'>
+                    className='border w-fit bg-white text-black border-white text-[9px] mt-2 px-2 py-0.5 rounded-full'>
                     Learn More
                   </a>
                 </div>
