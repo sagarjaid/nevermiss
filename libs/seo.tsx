@@ -19,7 +19,7 @@ export const getSEOTags = ({
 } = {}) => {
   return {
     // up to 50 characters (what does your app do for the user?) > your main should be here
-    title: 'Visa Interview AI — Practice US visa mock interview',
+    title: 'Visa Interview AI — Practice US Visa Mock Interview',
     // up to 160 characters (how does your app help the user?)
     description: description || config.appDescription,
     // some keywords separated by commas. by default it will be your app name
@@ -35,7 +35,7 @@ export const getSEOTags = ({
     openGraph: {
       title:
         openGraph?.title ||
-        'Visa Interview AI — Practice US visa mock interview' ||
+        'Visa Interview AI — Practice US Visa Mock Interview' ||
         config.appName,
       description: openGraph?.description || config.appDescription,
       url: openGraph?.url || `https://${config.domainName}/`,
