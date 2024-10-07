@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import PlausibleProvider from 'next-plausible';
 import { getSEOTags } from '@/libs/seo';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import config from '@/config';
 import './globals.css';
 import ClientWrapper from '@/components/ClientWrapper';
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </head>
       )}
       <body>
+        <GoogleAnalytics gaId='G-N447S94TC5' />
         <ClientWrapper>{children}</ClientWrapper> {/* Use a client component */}
       </body>
     </html>

@@ -24,7 +24,7 @@ const Pricing = () => {
             {/* {plan.isFeatured && ( */}
             <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
               <span
-                className={`badge text-xs py-5 sdm:py-1 text-primary-content font-semibold border-0 bg-green-500`}>
+                className={`badge text-xs py-5 sdm:py-1 text-primary-content font-semibold border-0 bg-yellow-500`}>
                 ONE PLAN TO SECURE YOUR US F1 VISA
               </span>
             </div>
@@ -52,7 +52,7 @@ const Pricing = () => {
                 <div className='flex flex-col justify-end mb-[4px] text-lg '>
                   <p className='relative'>
                     {/* <span className='absolute bg-rose-600 h-[1.5px] inset-x-0 top-[53%]'></span> */}
-                    <span className='text-base-content/80 line-through text-sm font-semibold text-red-500'>
+                    <span className='text-base-content/80 line-through font-semibold text-rose-600'>
                       $70.00 USD
                     </span>
                   </p>
