@@ -8,8 +8,6 @@ const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
 });
 
-console.log('getquestions got called');
-
 // The GET method for your API route
 export async function GET(req: Request) {
   const systemPrompt = `

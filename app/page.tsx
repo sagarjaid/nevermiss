@@ -72,7 +72,7 @@ export default function Home() {
               className='w-[90%] sdm:w-2/3'
             />
           </a>
-          <Pricing />
+          <Pricing hide={false} />
 
           {/* <div className=' w-full flex items-center justify-center'>
             <div className=' m-4 flex max-w-4xl flex-col items-center text-center justify-center gap-4 rounded-2xl bg-blue-500 p-8 text-white'>

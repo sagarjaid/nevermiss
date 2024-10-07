@@ -120,18 +120,13 @@ const DynamicPage = ({ params }: { params: Params }) => {
         </div>
       ) : (
         <>
-          <main className='flex flex-col items-center w-full justify-center'>
-            <div className='flex max-w-5xl w-full flex-col items-center justify-center'>
-              <div className=' w-full'>
-                <Suspense>
-                  <Header />
-                </Suspense>
-              </div>
-              <div className='flex flex-col gap-4 items-center justify-center'>
-                <VisaInterview
-                  baseInterviewQuestions={baseInterviewQuestions}
-                />
-              </div>
+          <Suspense>
+            <Header />
+          </Suspense>
+
+          <main>
+            <div className='flex flex-col gap-4 items-center justify-center'>
+              <VisaInterview baseInterviewQuestions={baseInterviewQuestions} />
             </div>
           </main>
         </>

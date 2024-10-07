@@ -10,7 +10,10 @@ import logo from '@/app/logo.png';
 
 import config from '@/config';
 import Navbar from './Navbar';
-import NavbarMobile from './NavbarMobile';
+import ButtonAccount from './ButtonAccount';
+import { usePathname } from 'next/navigation';
+
+import MobileNav from './MobileNav';
 
 const links: {
   href: string;
@@ -104,11 +107,11 @@ const Header = () => {
 
         {/* CTA on large screens */}
         <div className='hidden lg:flex lg:justify-end lg:flex-1 text-xs'>
-          {/* {cta} */}
-          <a
+          <ButtonAccount />
+          {/* <a
             href='/interview/91739730173'
             className='flex gap-2 bg-white justify-center items-center w-fit hover:bg-slate-50 p-2 px-3.5 border cursor-pointer border-black rounded-md'>
-            {/* <svg
+            <svg
               xmlns='http://www.w3.org/2000/svg'
               className='w-6 h-6'
               viewBox='0 0 48 48'>
@@ -128,16 +131,16 @@ const Header = () => {
                 fill='#1976D2'
                 d='M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z'
               />
-            </svg> */}
+            </svg>
             <span>Start 1 FREE Interview</span>
-          </a>
+          </a> */}
         </div>
       </nav>
 
       {/* Mobile menu, show/hide based on menu state. */}
       <div className={`relative z-50 ${isOpen ? '' : 'hidden'}`}>
         <div
-          className={`fixed inset-y-0 right-0 z-10 w-full p-4 overflow-y-auto bg-base-200 sm:max-w-sm sm:ring-1 sm:ring-neutral/10 transform origin-right transition ease-in-out duration-300`}>
+          className={`fixed inset-y-0 right-0 z-10 w-full p-4 overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-neutral/10 transform origin-right transition ease-in-out duration-300`}>
           {/* Your logo/name on small screens */}
           <div className='flex items-center justify-between'>
             <Link
@@ -175,7 +178,7 @@ const Header = () => {
           </div>
 
           {/* Your links on small screens */}
-          <div className='flow-root mt-6'>
+          <div className='flex flex-col h-full justify-between pt-4 pb-10'>
             {/* <div className='flex flex-col gap-2.5'>
               <div className='bg-white p-1.5 rounded-md hover:bg-gray-50 flex gap-2'>
                 <svg
@@ -230,14 +233,16 @@ const Header = () => {
                 </svg>
                 <button>Demonetized</button>
               </div>
-            </div>
+            </div> */}
 
-            <div className='pt-10'>
+            <MobileNav />
+
+            <div className='pt-10 pl-1.5'>
               <div className='footer-title font-semibold text-base-content tracking-widest text-sm md:text-left mb-3'>
                 LEGAL
               </div>
 
-              <div className='flex flex-col justify-center items-start gap-2.5 mb-10 text-xs'>
+              <div className='flex flex-col justify-center items-start gap-2.5  text-xs'>
                 <Link
                   href='/tos'
                   className='link link-hover'>
@@ -259,17 +264,15 @@ const Header = () => {
                   Build by Sagar Jaid
                 </Link>
               </div>
-            </div> */}
+            </div>
 
-            {/* <NavbarMobile /> */}
-
-            <div className='divider'></div>
+            {/* <div className='divider'></div> */}
             {/* Your CTA on small screens */}
             {/* <div className='flex flex-col'>{cta}</div> */}
-            <a
+            {/* <a
               href='/interview/91739730173'
               className='flex gap-2 bg-white hover:bg-slate-50 p-2 w-fit px-3.5 border cursor-pointer border-black rounded-md'>
-              {/* <svg
+              <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='w-6 h-6'
                 viewBox='0 0 48 48'>
@@ -289,10 +292,10 @@ const Header = () => {
                   fill='#1976D2'
                   d='M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z'
                 />
-              </svg> */}
-              {/* <span>Continue with Google</span> */}
+              </svg>
+              <span>Continue with Google</span>
               <span>Start 1 FREE Interview</span>
-            </a>
+            </a> */}
           </div>
         </div>
       </div>

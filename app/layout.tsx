@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </head>
       )}
       <body>
-        <GoogleAnalytics gaId='G-N447S94TC5' />
+        <GoogleAnalytics gaId='G-HJN7SJ6V09' />
         <ClientWrapper>{children}</ClientWrapper> {/* Use a client component */}
       </body>
     </html>

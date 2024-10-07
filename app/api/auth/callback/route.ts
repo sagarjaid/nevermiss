@@ -14,6 +14,9 @@ export async function GET(req: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
+  // const redirectUrl = `${requestUrl.origin}/dash/${config.auth.callbackUrl}`;
+
   // URL to redirect to after sign in process completes
   return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
+  // return NextResponse.redirect(redirectUrl);
 }

@@ -5,19 +5,24 @@ import ButtonCheckout from './ButtonCheckout';
 // It's your Stripe config in config.js.stripe.plans[] that will be used to display the plans
 // <ButtonCheckout /> renders a button that will redirect the user to Stripe checkout called the /api/stripe/create-checkout API endpoint with the correct priceId
 
-const Pricing = () => {
+const Pricing = ({ hide }: { hide: boolean }) => {
   return (
     <section
       className=' overflow-hidden w-full'
       id='pricing'>
-      <div className='py-24 px-8 max-w-5xl mx-auto'>
-        <div className='flex flex-col text-center w-full mb-20'>
-          <p className='font-medium text-primary mb-8'>Pricing</p>
-          <h2 className='font-bold text-3xl lg:text-5xl tracking-tight'>
-            Become Interview Ready with <br />
-            our affordable plan
-          </h2>
-        </div>
+      <div
+        className={
+          hide ? 'p-4 max-w-5xl mx-auto' : 'py-24 px-8 max-w-5xl mx-auto'
+        }>
+        {!hide && (
+          <div className='flex flex-col text-center w-full mb-20'>
+            <p className='font-medium text-primary mb-8'>Pricing</p>
+            <h2 className='font-bold text-3xl lg:text-5xl tracking-tight'>
+              Become Interview Ready with <br />
+              our affordable plan
+            </h2>
+          </div>
+        )}
 
         <div className='relative flex justify-center flex-col lg:flex-row items-center lg:items-stretch gap-8'>
           <div className='relative w-full max-w-lg'>
@@ -105,6 +110,30 @@ const Pricing = () => {
                     </span>
                   </span>
                 </li>
+
+                <li className='flex items-center gap-2'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                    className='w-[18px] h-[18px] opacity-80 shrink-0'>
+                    <path
+                      fillRule='evenodd'
+                      d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+
+                  <span className='flex flex-col'>
+                    <span>Visa Approved/ Rejected</span>
+                    <span className='text-[9px] text-base-content/60'>
+                      Get realistic instant feedback from Our AI visa officer -
+                      If your visa will be rejected or approved based on your
+                      current mock interview within seconds.
+                    </span>
+                  </span>
+                </li>
+
                 <li className='flex items-center gap-2'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -163,11 +192,10 @@ const Pricing = () => {
                   </svg>
 
                   <span className='flex flex-col'>
-                    <span>Visa Approved/ Rejected</span>
+                    <span>Additional +10 Interviews</span>
                     <span className='text-[9px] text-base-content/60'>
-                      Get realistic instant feedback from Our AI visa officer -
-                      If your visa will be rejected or approved based on your
-                      current mock interview within seconds.
+                      Failed in real US f1 visa, To practice more get +10
+                      additional interviews for absolutely FREE
                     </span>
                   </span>
                 </li>
@@ -190,28 +218,6 @@ const Pricing = () => {
                     <span className='text-[9px] text-base-content/60'>
                       Practice US mock visa interview on the go with our
                       upcoming mobile app on both Android and IOS devices.
-                    </span>
-                  </span>
-                </li>
-
-                <li className='flex items-center gap-2'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className='w-[18px] h-[18px] opacity-80 shrink-0'>
-                    <path
-                      fillRule='evenodd'
-                      d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-
-                  <span className='flex flex-col'>
-                    <span>Additional +10 Interviews</span>
-                    <span className='text-[9px] text-base-content/60'>
-                      Failed in real US f1 visa, To practice more get +10
-                      additional interviews for absolutely FREE
                     </span>
                   </span>
                 </li>
