@@ -165,7 +165,7 @@ const UserInfo = () => {
               />
             ) : (
               <svg
-                className='w-6 h-6'
+                className='w-32 h-32'
                 fill='none'
                 strokeWidth={1.5}
                 stroke='currentColor'

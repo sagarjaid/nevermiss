@@ -121,64 +121,69 @@ const ButtonAccount = () => {
                 height={20}
               />
             ) : (
-              <span className='w-8 h-8 bg-base-100 flex justify-center items-center rounded-full shrink-0 capitalize'>
+              <span className='w-6 h-6 bg-white border text-black flex justify-center items-center rounded-full shrink-0 capitalize'>
                 {user?.email?.charAt(0)}
               </span>
             )}
 
             {user?.user_metadata?.name ||
               user?.email?.split('@')[0] ||
-              'Account'}
+              (pathName.includes('/interview/') ? 'Guest User' : 'Account')}
 
             {isLoading ? (
               <span className='loading loading-spinner bg-black border loading-xs'></span>
             ) : (
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 20 20'
-                fill='currentColor'
-                className={`w-5 h-5 duration-200 opacity-50 ${
-                  open ? 'transform rotate-180 ' : ''
-                }`}>
-                <path
-                  fillRule='evenodd'
-                  d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z'
-                  clipRule='evenodd'
-                />
-              </svg>
+              <>
+                {user && (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                    className={`w-5 h-5 duration-200 opacity-50 ${
+                      open ? 'transform rotate-180 ' : ''
+                    }`}>
+                    <path
+                      fillRule='evenodd'
+                      d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                )}
+              </>
             )}
           </Popover.Button>
-          <Transition
-            enter='transition duration-100 ease-out'
-            enterFrom='transform scale-95 opacity-0'
-            enterTo='transform scale-100 opacity-100'
-            leave='transition duration-75 ease-out'
-            leaveFrom='transform scale-100 opacity-100'
-            leaveTo='transform scale-95 opacity-0'>
-            <Popover.Panel className='absolute right-0 z-10 mt-3 w-screen max-w-[175px] transform'>
-              <div className='overflow-hidden rounded-md shadow-md ring-1 ring-base-content ring-opacity-5 bg-base-100 p-1'>
-                <div className='space-y-0.5 text-sm'>
-                  <button
-                    className='flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-md font-medium'
-                    onClick={() => (window.location.href = '/dash')}>
-                    <svg
-                      className='w-5 h-5'
-                      fill='none'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                      xmlns='http://www.w3.org/2000/svg'
-                      aria-hidden='true'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        d='M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z'
-                      />
-                    </svg>
-                    Dashboard
-                  </button>
+          {user && (
+            <Transition
+              enter='transition duration-100 ease-out'
+              enterFrom='transform scale-95 opacity-0'
+              enterTo='transform scale-100 opacity-100'
+              leave='transition duration-75 ease-out'
+              leaveFrom='transform scale-100 opacity-100'
+              leaveTo='transform scale-95 opacity-0'>
+              <Popover.Panel className='absolute right-0 z-10 mt-3 w-screen max-w-[175px] transform'>
+                <div className='overflow-hidden rounded-md shadow-md ring-1 ring-base-content ring-opacity-5 bg-base-100 p-1'>
+                  <div className='space-y-0.5 text-sm'>
+                    <button
+                      className='flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-md font-medium'
+                      onClick={() => (window.location.href = '/dash')}>
+                      <svg
+                        className='w-5 h-5'
+                        fill='none'
+                        strokeWidth={1.5}
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                        xmlns='http://www.w3.org/2000/svg'
+                        aria-hidden='true'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z'
+                        />
+                      </svg>
+                      Dashboard
+                    </button>
 
-                  {/* <button
+                    {/* <button
                     className='flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-md font-medium'
                     onClick={() => (window.location.href = '/dashboard')}>
                     <svg
@@ -203,7 +208,7 @@ const ButtonAccount = () => {
                     Submit Channel
                   </button> */}
 
-                  {/* <button
+                    {/* <button
                     className='flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-md font-medium'
                     onClick={handleBilling}>
                     <svg
@@ -223,29 +228,30 @@ const ButtonAccount = () => {
                     My plans
                   </button> */}
 
-                  <button
-                    className='flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-md font-medium'
-                    onClick={handleSignOut}>
-                    <svg
-                      className='w-5 h-5'
-                      fill='none'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                      xmlns='http://www.w3.org/2000/svg'
-                      aria-hidden='true'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        d='M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9'
-                      />
-                    </svg>
-                    Logout
-                  </button>
+                    <button
+                      className='flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-md font-medium'
+                      onClick={handleSignOut}>
+                      <svg
+                        className='w-5 h-5'
+                        fill='none'
+                        strokeWidth={1.5}
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                        xmlns='http://www.w3.org/2000/svg'
+                        aria-hidden='true'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9'
+                        />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Popover.Panel>
-          </Transition>
+              </Popover.Panel>
+            </Transition>
+          )}
         </>
       )}
     </Popover>

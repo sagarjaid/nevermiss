@@ -91,7 +91,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className='flex flex-col h-60 gap-3 justify-center items-center'>
+                <div className='flex flex-col gap-3'>
                   <svg
                     className='w-10 h-10'
                     fill='none'
