@@ -1,5 +1,7 @@
+// app/api/stream/route.ts
 import axios from 'axios';
 import { NextResponse } from 'next/server';
+import fs from 'fs';
 
 // Handling the POST request for the /stream endpoint
 export async function POST(req: Request) {
@@ -8,7 +10,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       text,
-      voiceId = 'Will',
+      voiceId = 'Liv',
       bitrate = '64k',
       speed = '0',
       pitch = '1',
@@ -45,14 +47,17 @@ export async function POST(req: Request) {
       responseType: 'stream',
     });
 
-    // Return the audio stream directly to the client
+    // Create a response with the streamed audio data
     const audioStream = response.data;
 
-    // Return the audio stream as a response without saving to disk
+    // Save the audio to a file or return directly
+    const fileStream = fs.createWriteStream('audio.mp3');
+    audioStream.pipe(fileStream);
+
+    // Return the audio stream as a response
     return new Response(audioStream, {
       headers: {
         'Content-Type': 'audio/mpeg',
-        'Content-Disposition': 'attachment; filename="audio.mp3"', // Allows user to download as audio.mp3
       },
     });
   } catch (error) {

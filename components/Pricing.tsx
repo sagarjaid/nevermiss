@@ -8,7 +8,9 @@ import { useState } from 'react';
 // <ButtonCheckout /> renders a button that will redirect the user to Stripe checkout called the /api/stripe/create-checkout API endpoint with the correct priceId
 
 const Pricing = ({ hide }: { hide: boolean }) => {
-  const [toggle, setToggle] = useState<boolean>(true);
+  const initialStage = hide ? false : true;
+
+  const [toggle, setToggle] = useState<boolean>(initialStage);
   return (
     <section
       className=' overflow-hidden w-full'
@@ -26,7 +28,7 @@ const Pricing = ({ hide }: { hide: boolean }) => {
           </div>
         )}
 
-        <div className='relative flex justify-center flex-col lg:flex-row items-center lg:items-stretch gap-8'>
+        <div className='relative flex justify-center flex-col lg:flex-row items-center lg:items-stretch gap-6'>
           <div className='relative w-full max-w-lg'>
             {/* {plan.isFeatured && ( */}
             <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
@@ -60,7 +62,7 @@ const Pricing = ({ hide }: { hide: boolean }) => {
                   <p className='relative'>
                     {/* <span className='absolute bg-rose-600 h-[1.5px] inset-x-0 top-[53%]'></span> */}
                     <span className='text-base-content/80 line-through text-sm font-semibold text-red-500'>
-                      $70.00 USD
+                      $69.99 USD
                     </span>
                   </p>
                 </div>
@@ -81,20 +83,22 @@ const Pricing = ({ hide }: { hide: boolean }) => {
                   </div>
                 </div>
               </div>
-              {/* <div className='flex flex-col justify-center items-start w-full'> */}
-              <div
-                className='cursor-pointer text-xs mt-2'
-                onClick={() => setToggle(!toggle)}>
-                <hr />
-                <div className='relative left-[37%] border w-fit px-3 rounded-full bg-white -top-2.5'>
-                  {!toggle ? 'show features' : 'hide features'}
+
+              {hide && (
+                <div
+                  className='cursor-pointer text-xs mt-2 flex flex-col justify-center items-center gap-1'
+                  onClick={() => setToggle(!toggle)}>
+                  <hr className='w-full' />
+                  <div className='relative text-center text-gray-600 border w-fit px-3 rounded-full bg-white -top-3'>
+                    {!toggle ? 'show features' : 'hide features'}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {toggle && (
                 <>
                   <div>
-                    <p className='text-base-content/80 text-green-600 font-extrabold '>
+                    <p className='text-lg text-green-600 font-extrabold '>
                       What you are paying for!
                     </p>
                     <p className='text-base-content/60 text-xs mt-1 '>

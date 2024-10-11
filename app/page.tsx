@@ -33,7 +33,7 @@ export default function Home() {
 
             <a
               href='/signin'
-              className='flex gap-2 bg-white hover:bg-slate-50 p-2 px-3.5 border cursor-pointer border-black rounded-full'>
+              className='flex items-center gap-2 bg-white hover:bg-slate-50 p-2 px-3.5 border cursor-pointer border-black rounded-full'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='w-6 h-6'

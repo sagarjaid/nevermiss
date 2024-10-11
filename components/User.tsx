@@ -186,7 +186,7 @@ const UserInfo = () => {
                 user?.email?.split('@')[0] ||
                 'Account'}
             </span>
-            <span>Email : {user?.email}</span>
+            <span>Email : {user?.email || 'example@gmail.com'}</span>
             <span>Upload your cv/resume: coming soon...</span>
           </div>
 
