@@ -9,54 +9,11 @@ import VisaInterviewF from '@/components/core/visaInterviewF';
 import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
 import VisaInterview from '@/components/core/visaInterview';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export default function Dashboard() {
-  const baseInterviewQuestions = [
-    {
-      questionNumber: 1,
-      question: 'What university are you planning to attend?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 2,
-      question: "What was your GPA during your bachelor's degree?",
-      questionCategory: 'academicsHistory',
-    },
-    {
-      questionNumber: 3,
-      question: 'Who will be paying for your education?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 4,
-      question: 'What is your current job title?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 5,
-      question: 'Do you plan to work in the USA after graduating?',
-      questionCategory: 'postGraduationPlans',
-    },
-    {
-      questionNumber: 6,
-      question: 'Why did you choose this university?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 7,
-      question: 'What funds will be used to pay for your studies?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 8,
-      question: 'Why did you take a gap year?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 9,
-      question: 'Do you have any scholarship?',
-      questionCategory: 'otherQuestions',
-    },
-  ];
+  const generatedUUID = uuidv4(); // Ensure this function is called
+
   return (
     <>
       <main className='flex flex-col items-center w-full justify-center'>
@@ -94,7 +51,7 @@ export default function Dashboard() {
                 <div className='flex w-full flex-col items-center max-w-lg justify-center gap-4'>
                   <div className='flex w-full flex-col items-center justify-center gap-4 sm:flex-row'>
                     <a
-                      href='/interview/91739730173'
+                      href={`/interview/${generatedUUID}`}
                       className='relative h-52 w-full flex cursor-pointer items-center justify-between gap-2 rounded-md p-4 border shadow-md hover:shadow-lg'>
                       <div className=' absolute right-4 -top-2 w-max rounded-full bg-blue-500 animate-pulse shadow-sm px-1 text-xs text-transparent'>
                         .

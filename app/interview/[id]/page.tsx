@@ -40,8 +40,6 @@ const DynamicPage = ({ params }: { params: Params }) => {
 
   const { id } = params;
 
-  console.log(id, 'id');
-
   // Fetch base questions
   const getBaseQuestions = async () => {
     try {
@@ -52,9 +50,15 @@ const DynamicPage = ({ params }: { params: Params }) => {
       });
 
       const arr = JSON.parse(resData1?.result);
+      const baseInterviewQuestionsArr = arr.balancedInterviewQuestionsArr;
 
-      setBaseInterviewQuestions(arr.balancedInterviewQuestionsArr);
+      // Update the state with the base questions array
+      setBaseInterviewQuestions(baseInterviewQuestionsArr);
+
+      setCheckingPermissions(false);
     } catch (error) {
+      // If API call fails, use the default base questions
+      setCheckingPermissions(true);
       setBaseInterviewQuestions([
         {
           questionNumber: 1,
@@ -102,9 +106,9 @@ const DynamicPage = ({ params }: { params: Params }) => {
           questionCategory: 'otherQuestions',
         },
       ]);
-      console.error('Failed to fetch data:', error);
-    } finally {
       setCheckingPermissions(false);
+
+      console.error('Failed to fetch data:', error);
     }
   };
 
@@ -146,6 +150,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
 
   // Function to request permission to access microphone and camera
   const requestPermission = async () => {
+    setLoading(true);
     try {
       // Request access to microphone
       const audioStream = await navigator.mediaDevices.getUserMedia({
@@ -189,7 +194,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
         video: false,
       }));
     }
-    setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -229,7 +234,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
             </div>
           )}
 
-          {!checkingPermissions && !isAccess.audio && !isAccess.video && (
+          {!isAccess.audio && !isAccess.video && (
             <div className='flex flex-col max-w-96 items-center border rounded-md mt-20 gap-5 text-sm'>
               <div className='flex flex-col gap-4 p-4'>
                 <div className='flex flex-col justify-center items-center gap-3'>

@@ -84,7 +84,7 @@ const Pricing = ({ hide }: { hide: boolean }) => {
                 </div>
               </div>
 
-              {hide && (
+              {hide ? (
                 <div
                   className='cursor-pointer text-xs mt-2 flex flex-col justify-center items-center gap-1'
                   onClick={() => setToggle(!toggle)}>
@@ -93,6 +93,8 @@ const Pricing = ({ hide }: { hide: boolean }) => {
                     {!toggle ? 'show features' : 'hide features'}
                   </div>
                 </div>
+              ) : (
+                <hr className='w-full' />
               )}
 
               {toggle && (
