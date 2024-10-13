@@ -1,3 +1,5 @@
+'use client';
+
 import { Suspense } from 'react';
 import Header from '@/components/Header';
 // import ButtonSubmitYT from '@/components/ButtonSubmitYT';
@@ -5,61 +7,45 @@ import Header from '@/components/Header';
 import Navbar from '@/components/Navbar';
 import VisaInterviewThree from '@/components/core/visaInterviewThree';
 import VisaInterviewF from '@/components/core/visaInterviewF';
-
 import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
 import VisaInterview from '@/components/core/visaInterview';
+import { createClient } from '@/libs/supabase/client';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
-  const baseInterviewQuestions = [
-    {
-      questionNumber: 1,
-      question: 'What university are you planning to attend?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 2,
-      question: "What was your GPA during your bachelor's degree?",
-      questionCategory: 'academicsHistory',
-    },
-    {
-      questionNumber: 3,
-      question: 'Who will be paying for your education?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 4,
-      question: 'What is your current job title?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 5,
-      question: 'Do you plan to work in the USA after graduating?',
-      questionCategory: 'postGraduationPlans',
-    },
-    {
-      questionNumber: 6,
-      question: 'Why did you choose this university?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 7,
-      question: 'What funds will be used to pay for your studies?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 8,
-      question: 'Why did you take a gap year?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 9,
-      question: 'Do you have any scholarship?',
-      questionCategory: 'otherQuestions',
-    },
-  ];
+  const supabase = createClient();
+
+  const [history, setHistory] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const getResult = async () => {
+    setLoading(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data: resultData, error } = await supabase
+      .from('profiles')
+      .select('interviews')
+      .eq('id', user.id);
+
+    setHistory(resultData[0]?.interviews?.reverse());
+
+    console.log(resultData, 'resultData');
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getResult();
+  }, []);
+
   return (
     <>
       <main className='flex flex-col items-center w-full justify-center'>
+        <div className='bg-green-500 text-white text-sm w-full flex justify-center items-center p-2 py-3'>
+          We are working on few new features, Errors may occur
+        </div>
         <div className='flex max-w-5xl w-full flex-col items-center justify-center'>
           <div className='border-b w-full'>
             <Suspense>
@@ -91,23 +77,74 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className='flex flex-col gap-3'>
-                  <svg
-                    className='w-10 h-10'
-                    fill='none'
-                    strokeWidth={1.5}
-                    stroke='red'
-                    viewBox='0 0 24 24'
-                    xmlns='http://www.w3.org/2000/svg'
-                    aria-hidden='true'>
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
-                    />
-                  </svg>
-                  <div className='text-red-500'>No Interview History found</div>
-                </div>
+                {loading && <div>loading result history...</div>}
+
+                {history && !loading && (
+                  <div>
+                    {history.map((el, i) => (
+                      <a
+                        href={`/history/${el}`}
+                        key={i}
+                        className='hover:bg-gray-50 p-4 cursor-pointer flex items-center w-full border-b'>
+                        <div className='flex gap-6 items-center w-full'>
+                          <svg
+                            className='w-6 h-6'
+                            fill='none'
+                            strokeWidth={1.5}
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'
+                            xmlns='http://www.w3.org/2000/svg'
+                            aria-hidden='true'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z'
+                            />
+                          </svg>
+                          <span>Interview ID: {el}</span>
+                        </div>
+                        <div>
+                          <svg
+                            className='w-6 h-6'
+                            fill='none'
+                            strokeWidth={2}
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'
+                            xmlns='http://www.w3.org/2000/svg'
+                            aria-hidden='true'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='m8.25 4.5 7.5 7.5-7.5 7.5'
+                            />
+                          </svg>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {!history && !loading && (
+                  <div className='flex items-center gap-2'>
+                    <svg
+                      className='w-6 h-6'
+                      fill='none'
+                      strokeWidth={1.5}
+                      stroke='red'
+                      viewBox='0 0 24 24'
+                      xmlns='http://www.w3.org/2000/svg'
+                      aria-hidden='true'>
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
+                      />
+                    </svg>
+                    <div className='text-red-500'>
+                      No Interview History found
+                    </div>
+                  </div>
+                )}
               </main>
             </div>
 

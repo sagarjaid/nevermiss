@@ -45,7 +45,7 @@ const ButtonCheckout = ({
   return (
     <button
       className='btn bg-green-600 hover:bg-green-700 disabled:bg-green-600 disabled:text-white rounded-sm text-white btn-block group'
-      onClick={() => router.push('/interview/91739730173')}>
+      onClick={() => router.push('/signin')}>
       {isLoading ? (
         <span className='loading loading-spinner loading-xs'></span>
       ) : (

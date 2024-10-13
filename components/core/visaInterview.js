@@ -10,8 +10,11 @@ import { useWhisperRecording } from '@/hooks/useWhisperRecording';
 import { useToggle } from '@/hooks/useToggle';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import useSpeechSynthesis from '@/hooks/useSpeechSynthesis';
+import { createClient } from '@/libs/supabase/client';
+import { useRouter } from 'next/navigation';
+import { useApiCall } from '@/hooks/useApiCall';
 
-const VisaInterview = ({ baseInterviewQuestions }) => {
+const VisaInterview = ({ baseInterviewQuestions, interviewId }) => {
   const {
     officerToggle,
     feedbackToggle,
@@ -29,9 +32,13 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
   // const { handleTextToSpeech, isSpeaking } = useSpeechSynthesis();
 
   const { recording, transcript, startRecording, stopRecording } =
-    useWhisperRecording(process.env.NEXT_PUBLIC_OPENAI_KEY);
+    useWhisperRecording();
 
   console.log({ transcript, recording }, 'recording');
+
+  const router = useRouter();
+  const { callApi } = useApiCall();
+  const supabase = createClient();
 
   const [visaOfficerResponseText, setVisaOfficerResponseText] = useState('');
   const [visaOfficerFeedbackText, setVisaOfficerFeedbackText] = useState('');
@@ -39,6 +46,9 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
     useState('');
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const [loadingResult, setLoadingResult] = useState(false);
+  const [qnAObj, setQnAObj] = useState({});
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < baseInterviewQuestions.length - 1) {
@@ -49,8 +59,34 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
     setResponseToggle(false);
   };
 
-  const handleResult = () => {
-    console.log(' getResult() got called');
+  const handleResult = async () => {
+    setLoadingResult(true);
+    const { data, error } = await supabase
+      .from('interviews')
+      .update({ final_interview_questions: qnAObj })
+      .eq('interview_id', interviewId);
+
+    try {
+      const resData1 = await callApi('/api/get-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(qnAObj),
+      });
+
+      const result = JSON.parse(resData1?.result);
+      console.log(result, 'resData1?.result');
+
+      const { data, error } = await supabase
+        .from('interviews')
+        .update({ interview_result: result, visa_status: result?.visaStatus })
+        .eq('interview_id', interviewId);
+
+      setLoadingResult(false);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+
+    router.push(`/history/${interviewId}`);
   };
 
   const totalQuestions = baseInterviewQuestions?.length - 1;
@@ -58,6 +94,52 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
   useEffect(() => {
     handleTextToSpeech(baseInterviewQuestions[currentQuestionIndex]?.question);
   }, [currentQuestionIndex]);
+
+  // Function to transform baseInterviewQuestions into the desired format
+  const transformInterviewQuestions = (
+    baseInterviewQuestions,
+    interviewID,
+    currentQuestionNumber
+  ) => {
+    return {
+      interviewID: interviewID,
+      currentQuestionNumber: currentQuestionNumber,
+      baseInterviewQuestions: baseInterviewQuestions.map((question) => ({
+        ...question,
+        userAnswer: '',
+        officerResponse: {},
+      })),
+    };
+  };
+
+  // Function to update userAnswer for a specific questionNumber
+  const updateUserAnswer = (interview, questionNumber, answer) => {
+    interview.baseInterviewQuestions.forEach((question) => {
+      if (question.questionNumber === questionNumber) {
+        question.userAnswer = answer;
+      }
+    });
+  };
+
+  // Function to update currentQuestionNumber
+  const updateCurrentQuestionNumber = (interview, newQuestionNumber) => {
+    interview.currentQuestionNumber = newQuestionNumber;
+  };
+
+  useEffect(() => {
+    if (baseInterviewQuestions) {
+      let interviewObj = transformInterviewQuestions(
+        baseInterviewQuestions,
+        interviewId,
+        currentQuestionIndex + 1
+      );
+      setQnAObj(interviewObj);
+    }
+  }, [baseInterviewQuestions]);
+
+  // console.log(qnAObj, 'interview');
+
+  // console.log(currentQuestionIndex, 'currentQuestionIndex');
 
   return (
     <div className='flex h-fit flex-col gap-4 rounded-xl p-4 sdm:flex-row'>
@@ -77,6 +159,11 @@ const VisaInterview = ({ baseInterviewQuestions }) => {
           isSpeaking={isSpeaking}
         />
         <SpeechContainer
+          loadingResult={loadingResult}
+          setQnAObj={setQnAObj}
+          updateUserAnswer={updateUserAnswer}
+          updateCurrentQuestionNumber={updateCurrentQuestionNumber}
+          qnAObj={qnAObj}
           setOfficerToggle={setOfficerToggle}
           handleTextToSpeech={handleTextToSpeech}
           isSpeaking={isSpeaking}

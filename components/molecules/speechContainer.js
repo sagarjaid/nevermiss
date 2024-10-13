@@ -24,8 +24,11 @@ const SpeechContainer = ({
   currentQuestionIndex,
   totalQuestions,
   handleResult,
-  baseInterviewQuestions,
-  currentQuestion,
+  loadingResult,
+  setQnAObj,
+  updateCurrentQuestionNumber,
+  updateUserAnswer,
+  qnAObj,
 }) => {
   const [visaOfficerResponse, setVisaOfficerResponse] = useState(false);
   const [answer, setAnswer] = useState(false);
@@ -53,39 +56,47 @@ const SpeechContainer = ({
     setAnswer(true);
     stopTimer();
     resetTimer();
+
+    if (transcript) {
+      updateUserAnswer(qnAObj, currentQuestionIndex + 1, transcript);
+      updateCurrentQuestionNumber(qnAObj, currentQuestionIndex + 1);
+    }
+
     timeoutRef.current = setTimeout(async () => {
-      let userResponse = transcript;
+      console.log(qnAObj, 'qnAObj handleStartRecording');
       try {
         const resData1 = await callApi('/api/get-data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            baseInterviewQuestions: baseInterviewQuestions,
-            currentQuestion: currentQuestion,
-            userAnswer: userResponse,
-          }),
+          body: JSON.stringify(qnAObj),
         });
 
-        console.log(resData1?.result, 'resData1?.result');
+        // console.log(resData1?.result, 'resData1?.result');
 
-        const visaOfficerRes = JSON.parse(resData1?.result);
+        const newQnAObj = JSON.parse(resData1?.result);
+        setQnAObj(newQnAObj);
 
-        console.log(visaOfficerRes, 'resData1?.result');
+        // console.log(newQnAObj, 'resData1?.result || newQnAObj');
 
         setVisaOfficerResponseText(
-          visaOfficerRes?.currentQuestion?.visaOfficerResponse
+          newQnAObj?.baseInterviewQuestions[currentQuestionIndex]
+            ?.officerResponse?.officer?.visaOfficerResponse
         );
 
         handleTextToSpeech(
-          !isSpeaking && visaOfficerRes?.currentQuestion?.visaOfficerResponse
+          !isSpeaking &&
+            newQnAObj?.baseInterviewQuestions[currentQuestionIndex]
+              ?.officerResponse?.officer?.visaOfficerResponse
         );
 
         setVisaOfficerFeedbackText(
-          visaOfficerRes?.currentQuestion?.feedbackToStudent
+          newQnAObj?.baseInterviewQuestions[currentQuestionIndex]
+            ?.officerResponse?.officer?.feedbackToStudent
         );
 
         setVisaOfficerSampleResponseText(
-          visaOfficerRes?.currentQuestion?.sampleResponse
+          newQnAObj?.baseInterviewQuestions[currentQuestionIndex]
+            ?.officerResponse?.officer?.exampleResponse
         );
 
         setAnswer(false);
@@ -131,6 +142,7 @@ const SpeechContainer = ({
         <>
           <RetakeAnswer handleRetake={handleRetake} />
           <QuestionControls
+            loadingResult={loadingResult}
             handleNextQuestion={handleNextQuestionWithReset}
             currentQuestionIndex={currentQuestionIndex}
             totalQuestions={totalQuestions}

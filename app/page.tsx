@@ -11,7 +11,10 @@ import Footer from '@/components/molecules/Footer';
 export default function Home() {
   return (
     <>
-      <main className='flex flex-col items-center w-full justify-center pt-2'>
+      <main className='flex flex-col items-center w-full justify-center'>
+        <div className='bg-green-500 text-white text-sm w-full flex justify-center items-center p-2 py-3'>
+          We are working on few new features, Errors may occur
+        </div>
         <div className='flex max-w-5xl w-full gap-4 flex-col items-center justify-center'>
           <Suspense>
             <Header />

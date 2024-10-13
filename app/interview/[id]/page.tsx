@@ -8,6 +8,7 @@ import VisaInterview from '@/components/core/visaInterview';
 import { useApiCall } from '@/hooks/useApiCall';
 import Header from '@/components/Header';
 import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
+import { createClient } from '@/libs/supabase/client';
 
 interface Question {
   questionNumber: number;
@@ -34,11 +35,11 @@ const DynamicPage = ({ params }: { params: Params }) => {
     video: false,
     audio: false,
   });
+
   const hasFetchedRef = useRef(false); // Ref to track if questions have been fetched
-
-  const { callApi } = useApiCall();
-
   const { id } = params;
+  const { callApi } = useApiCall();
+  const supabase = createClient();
 
   // Fetch base questions
   const getBaseQuestions = async () => {
@@ -56,6 +57,45 @@ const DynamicPage = ({ params }: { params: Params }) => {
       setBaseInterviewQuestions(baseInterviewQuestionsArr);
 
       setCheckingPermissions(false);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // Prepare your interview data for insertion into the database
+      const interviewData = {
+        interview_id: id, // Generate a new UUID for the interview_id
+        user_id: user.id, // Set the user_id (replace with the correct user_id)
+        base_interview_questions: baseInterviewQuestionsArr,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Insert the new row into the 'interviews' table
+      const { data, error } = await supabase
+        .from('interviews')
+        .insert([interviewData]);
+
+      // Fetch the current channels array
+      const { data: profileData, error: profileErrorFetch } = await supabase
+        .from('profiles')
+        .select('interviews')
+        .eq('id', user.id)
+        .single();
+
+      // Append the new channel_id to the channels array
+      const updateInterviews = [...(profileData.interviews || []), id];
+
+      console.log(updateInterviews, 'updateInterviews');
+
+      const { error: profileErrorUpdate } = await supabase
+        .from('profiles')
+        .update({ interviews: updateInterviews })
+        .eq('id', user.id); // Match the profile by user_id
+
+      if (error || profileErrorUpdate || profileErrorFetch) {
+        console.error('Error updating interview table:', error);
+      }
     } catch (error) {
       // If API call fails, use the default base questions
       setCheckingPermissions(true);
@@ -112,7 +152,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
     }
   };
 
-  console.log(baseInterviewQuestions, 'baseInterviewQuestions');
+  // console.log(baseInterviewQuestions, 'baseInterviewQuestions');
 
   useEffect(() => {
     checkPermissions();
@@ -203,6 +243,9 @@ const DynamicPage = ({ params }: { params: Params }) => {
   return (
     <>
       <main className='flex flex-col items-center w-full justify-center'>
+        <div className='bg-green-500 text-white text-sm w-full flex justify-center items-center p-2 py-3'>
+          We are working on few new features, Errors may occur
+        </div>
         <div className='flex max-w-5xl w-full flex-col items-center justify-center'>
           <div className=' w-full'>
             <Suspense>
@@ -297,7 +340,10 @@ const DynamicPage = ({ params }: { params: Params }) => {
           )}
           {baseInterviewQuestions[0] && isAccess.audio && isAccess.video && (
             <div className='flex flex-col gap-4 items-center justify-center'>
-              <VisaInterview baseInterviewQuestions={baseInterviewQuestions} />
+              <VisaInterview
+                baseInterviewQuestions={baseInterviewQuestions}
+                interviewId={id}
+              />
             </div>
           )}
         </div>

@@ -3,16 +3,18 @@ import Header from '@/components/Header';
 // import ButtonSubmitYT from '@/components/ButtonSubmitYT';
 // import ChannelList from '@/components/ChannelList';
 import Navbar from '@/components/Navbar';
-import VisaInterviewThree from '@/components/core/visaInterviewThree';
+import Result from '@/components/molecules/Result';
 import VisaInterviewF from '@/components/core/visaInterviewF';
 
 import VisaInterviewTwo from '@/components/core/visaInterviewTwo';
 import VisaInterview from '@/components/core/visaInterview';
 
-import { v4 as uuidv4 } from 'uuid';
+interface Params {
+  id: string;
+}
 
-export default function Dashboard() {
-  const generatedUUID = uuidv4(); // Ensure this function is called
+const DynamicPage = ({ params }: { params: Params }) => {
+  const { id } = params;
 
   return (
     <>
@@ -44,75 +46,7 @@ export default function Dashboard() {
                 /> */}
 
               <main className='flex gap-6 flex-col p-4 w-full'>
-                <div className='flex flex-col justify-start items-start text-sm  xs:text-lg sdm:text-xl sm:gap-3 md:text-2xl p-1'>
-                  <div className='font-semibold'>Dashboard</div>
-                  <div className='text-sm'>
-                    <span>Welcome user,</span> Take the first step toward your
-                    dream today!
-                  </div>
-                </div>
-                <div className='flex w-full flex-col items-center max-w-lg justify-center gap-4'>
-                  <div className='flex w-full flex-col items-center justify-center gap-4 sm:flex-row'>
-                    <a
-                      href={`/interview/${generatedUUID}`}
-                      className='relative h-52 w-full flex cursor-pointer items-center justify-between gap-2 rounded-md p-4 border shadow-md hover:shadow-lg'>
-                      <div className=' absolute right-4 -top-2 w-max rounded-full bg-blue-500 animate-pulse shadow-sm px-1 text-xs text-transparent'>
-                        .
-                      </div>
-                      <div className='flex flex-col gap-3'>
-                        <svg
-                          className='w-10 h-10'
-                          fill='none'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          viewBox='0 0 24 24'
-                          xmlns='http://www.w3.org/2000/svg'
-                          aria-hidden='true'>
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z'
-                          />
-                        </svg>
-                        <div className='text-base mt-4 font-semibold'>
-                          Start New AI Mock Interview
-                        </div>
-                        <div className='text-xs text-gray-600'>
-                          Our AI Visa officer will take an USA F1 visa
-                          interview, be prepared
-                        </div>
-                      </div>
-                    </a>
-                    <a
-                      href='/history'
-                      className='flex h-52 w-full cursor-pointer items-center justify-between gap-2 rounded-md p-4  border shadow-md hover:shadow-lg'>
-                      <div className='flex flex-col gap-3 '>
-                        <svg
-                          className='w-10 h-10'
-                          fill='none'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          viewBox='0 0 24 24'
-                          xmlns='http://www.w3.org/2000/svg'
-                          aria-hidden='true'>
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3'
-                          />
-                        </svg>
-                        <div className='text-lg mt-4 font-semibold'>
-                          Interview <br />
-                          History
-                        </div>
-                        <div className='text-xs text-gray-600'>
-                          Instantly Access your previous USA f1 mock visa
-                          Interview history
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
+                <Result interviewId={id} />
               </main>
             </div>
 
@@ -179,4 +113,5 @@ export default function Dashboard() {
       </main>
     </>
   );
-}
+};
+export default DynamicPage;

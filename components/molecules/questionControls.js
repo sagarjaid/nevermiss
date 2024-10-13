@@ -5,6 +5,7 @@ const QuestionControls = ({
   currentQuestionIndex,
   totalQuestions,
   handleResult,
+  loadingResult,
 }) => {
   // const reloadPage = usePageReload();
 
@@ -16,12 +17,15 @@ const QuestionControls = ({
           onClick={handleNextQuestion}>
           Next Question
         </div>
+      ) : loadingResult ? (
+        <div>redirecting to the results page</div>
       ) : (
-        <a
+        <div
+          onClick={handleResult}
           href='/dash'
           className='w-fit cursor-pointer rounded-md border border-green-600 bg-green-200 px-3.5 py-1.5 text-center shadow-sm hover:bg-green-300'>
-          End the Interview
-        </a>
+          End the Interview and get Result
+        </div>
       )}
     </div>
   );

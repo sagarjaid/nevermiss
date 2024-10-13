@@ -14,13 +14,10 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   try {
     // Parse the request body
-    const { baseInterviewQuestions, currentQuestion, userAnswer } =
-      await req.json();
-
-    console.log({ baseInterviewQuestions, currentQuestion, userAnswer });
+    const qnAObj = await req.json();
 
     // Check for missing required fields
-    if (!baseInterviewQuestions || !currentQuestion || !userAnswer) {
+    if (!qnAObj) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -28,31 +25,50 @@ export async function POST(req: Request) {
     }
 
     // Generate the user prompt based on the input
-    const userPrompt = generateSystemRole(
-      baseInterviewQuestions,
-      currentQuestion,
-      userAnswer
-    );
 
-    console.log(userPrompt, 'userPrompt');
+    const userPrompt = generateSystemRole(qnAObj);
 
     // Make the OpenAI API call
     const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       messages: [
         {
+          role: 'system',
+          content: [
+            {
+              type: 'text',
+              text: userPrompt,
+            },
+          ],
+        },
+        {
           role: 'user',
-          content: userPrompt,
+          content: [
+            {
+              type: 'text',
+              text: 'generate response ',
+            },
+          ],
+        },
+        {
+          role: 'assistant',
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(qnAObj),
+            },
+          ],
         },
       ],
-      model: 'gpt-3.5-turbo',
-      temperature: 0.7,
-      max_tokens: 2000,
+      temperature: 1,
+      max_tokens: 4071,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      response_format: { type: 'json_object' },
+      response_format: {
+        type: 'json_object',
+      },
     });
-
     const responseContent = response.choices[0]?.message?.content;
 
     if (!responseContent) {
