@@ -11,53 +11,6 @@ import VisaInterview from '@/components/core/visaInterview';
 import UserInfo from '@/components/User';
 
 export default function Dashboard() {
-  const baseInterviewQuestions = [
-    {
-      questionNumber: 1,
-      question: 'What university are you planning to attend?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 2,
-      question: "What was your GPA during your bachelor's degree?",
-      questionCategory: 'academicsHistory',
-    },
-    {
-      questionNumber: 3,
-      question: 'Who will be paying for your education?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 4,
-      question: 'What is your current job title?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 5,
-      question: 'Do you plan to work in the USA after graduating?',
-      questionCategory: 'postGraduationPlans',
-    },
-    {
-      questionNumber: 6,
-      question: 'Why did you choose this university?',
-      questionCategory: 'universityAndStudyPlans',
-    },
-    {
-      questionNumber: 7,
-      question: 'What funds will be used to pay for your studies?',
-      questionCategory: 'studentFinances',
-    },
-    {
-      questionNumber: 8,
-      question: 'Why did you take a gap year?',
-      questionCategory: 'workExperience',
-    },
-    {
-      questionNumber: 9,
-      question: 'Do you have any scholarship?',
-      questionCategory: 'otherQuestions',
-    },
-  ];
   return (
     <>
       <main className='flex flex-col items-center w-full justify-center'>

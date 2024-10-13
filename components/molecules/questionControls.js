@@ -18,7 +18,7 @@ const QuestionControls = ({
           Next Question
         </div>
       ) : loadingResult ? (
-        <div>redirecting to the results page</div>
+        <div>redirecting to the results page...</div>
       ) : (
         <div
           onClick={handleResult}

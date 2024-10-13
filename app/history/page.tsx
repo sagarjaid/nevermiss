@@ -26,11 +26,11 @@ export default function Dashboard() {
     } = await supabase.auth.getUser();
 
     const { data: resultData, error } = await supabase
-      .from('profiles')
-      .select('interviews')
-      .eq('id', user.id);
+      .from('interviews')
+      .select('interview_id')
+      .eq('user_id', user.id);
 
-    setHistory(resultData[0]?.interviews?.reverse());
+    setHistory(resultData.map((interview) => interview.interview_id));
 
     console.log(resultData, 'resultData');
     setLoading(false);

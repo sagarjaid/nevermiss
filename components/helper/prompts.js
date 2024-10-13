@@ -45,7 +45,7 @@ officerResponse: {
               visaOfficerResponse: 'This is the visa officer conversation response and your answer can be any of these "Okay", "Understood", "Okay,  let's move to the next question"',
               feedbackToStudent:
                 ' This is the visa officer's feedback response to the student based upon the user's answer to the current question"',
-           exampleResponse: how student should have answer the asked question keeping the visa officer's evaluation criteria in mind,
+           exampleResponse: understand how user has answer this question and respond the same answer in better way.
             },
             visaStatus: true as in if a user is accepted or false as in the student is rejected based on this question,
             isError:
@@ -56,8 +56,8 @@ officerResponse: {
 How to respond instructions: 
 
 - Based on the Interview factors & Visa Officer's Evaluation criteria update officerResponse.
-- Based upon the current question and answer of current questionNumber you can only modify the next questions keys where questionNumber > cureentQuestionNumber of the baseInterviewQuestions array for a better flow of this interview.
-- If QNAObj baseInterviewQuestions.length is X then response  baseInterviewQuestions.length should be X
+- Based upon the current question and answer of current questionNumber you can only modify the next question inside baseInterviewQuestions array for a better flow of this interview.
+- If QNAObj baseInterviewQuestions.length is X then response baseInterviewQuestions.length should be X
 - The baseInterviewQuestions can only have max 9 questions.
 - You are not allowed to introduce any new key to the objects.
 - Output the result in the following valid JSON format.

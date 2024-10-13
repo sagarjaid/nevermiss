@@ -35,7 +35,7 @@ How to respond
 
 - Analyze the above interview QNAObj
 - In which case visa officer should Reject the student f1 visa are shared below
--  In which case visa officer should Approve the student f1 visa 
+- In which case visa officer should Approve the student f1 visa are shared below
 - 4-6 reasons should be proved  in response key "reasons" based upon QNAObj inetview questions and answer of users.
 - You are not allowed to introduce any new key to the objects.
 - Output the result in the following valid JSON format.
@@ -81,7 +81,7 @@ Response JSON obj
     qnAObj?.interviewID || 'interviewID from QNAObj Oject key interviewID'
   }  ,
   visaStatus: true as in if a students visa is approved || false as in the students visa is rejected,
-  reasons: reasons for rejection or reasons for approval in form of [] (array of stings text) use userAnswers to give reasons.
+  reasons: reasons for rejection or reasons for approval in form of [] (array of stings text) use from userAnswers qnAObj highly specific reasons, Note: you can't just simply state: Visa Approval/Rejection cases.
  } `;
 
     // Make the OpenAI API call
