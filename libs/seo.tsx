@@ -19,7 +19,7 @@ export const getSEOTags = ({
 } = {}) => {
   return {
     // up to 50 characters (what does your app do for the user?) > your main should be here
-    title: 'Visa Interview AI — Practice US Visa Mock Interview',
+    title: 'Visa Interview AI — Practice US F1 Visa Mock Interview',
     // up to 160 characters (how does your app help the user?)
     description: description || config.appDescription,
     // some keywords separated by commas. by default it will be your app name
@@ -92,9 +92,9 @@ export const renderSchemaTags = () => {
           url: `https://${config.domainName}/`,
           author: {
             '@type': 'Person',
-            name: 'Marc Lou',
+            name: 'Sagar Jaid',
           },
-          datePublished: '2023-08-01',
+          datePublished: '2024-08-01',
           applicationCategory: 'EducationalApplication',
           aggregateRating: {
             '@type': 'AggregateRating',
@@ -104,7 +104,7 @@ export const renderSchemaTags = () => {
           offers: [
             {
               '@type': 'Offer',
-              price: '9.00',
+              price: '39.00',
               priceCurrency: 'USD',
             },
           ],
