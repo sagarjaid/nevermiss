@@ -152,7 +152,7 @@ const MobileNav = () => {
   return (
     <>
       <div className='overflow-hidden  bg-base-100 p-1'>
-        <div className='space-y-2 text-sm'>
+        <div className='space-y-4 text-sm'>
           {/* <button
             className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
             onClick={() => (window.location.href = '/list')}>
@@ -274,8 +274,9 @@ const MobileNav = () => {
           {!user && (
             <>
               <hr />
+              {/* <div className='flex flex-col gap-4'> */}
               <button
-                className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
+                className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5 border rounded-full  w-full font-medium'
                 onClick={() => (window.location.href = '/signin')}>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -300,6 +301,16 @@ const MobileNav = () => {
                 </svg>
                 Continue with Google
               </button>
+              {/* <button
+                  className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
+                  onClick={() => (window.location.href = '/signin')}>
+                  {pricingSvg}
+                  Pricing
+                </button>
+                <a
+                  className='underline text-sm'
+                  href='/#pricing'></a>
+              </div> */}
             </>
           )}
 

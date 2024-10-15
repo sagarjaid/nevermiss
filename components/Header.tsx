@@ -48,6 +48,25 @@ const Header = () => {
     setIsOpen(false);
   }, [searchParams]);
 
+  const pathName = usePathname();
+
+  const pricingSvg = (
+    <svg
+      className='w-5 h-5'
+      fill='none'
+      strokeWidth={1.5}
+      stroke='currentColor'
+      viewBox='0 0 24 24'
+      xmlns='http://www.w3.org/2000/svg'
+      aria-hidden='true'>
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3'
+      />
+    </svg>
+  );
+
   return (
     <header className='w-full'>
       <nav
@@ -107,7 +126,25 @@ const Header = () => {
 
         {/* CTA on large screens */}
         <div className='hidden lg:flex lg:justify-end lg:flex-1 text-xs'>
-          <ButtonAccount />
+          <div className='flex items-center justify-center gap-4'>
+            {pathName.endsWith('/') ? (
+              <>
+                <a
+                  href='/#pricing'
+                  className='flex items-center gap-2 hover:bg-base-300 duration-200
+              p-2 w-fit rounded-lg font-medium'>
+                  {pricingSvg}
+                  <span>Pricing</span>
+                </a>
+                <ButtonAccount />
+              </>
+            ) : (
+              <>
+                <ButtonAccount />
+              </>
+            )}
+          </div>
+
           {/* <a
             href='/interview/91739730173'
             className='flex gap-2 bg-white justify-center items-center w-fit hover:bg-slate-50 p-2 px-3.5 border cursor-pointer border-black rounded-md'>
@@ -252,6 +289,11 @@ const Header = () => {
                   href='/privacy-policy'
                   className='link link-hover'>
                   Privacy policy
+                </Link>
+                <Link
+                  href='/#pricing'
+                  className='link link-hover'>
+                  Pricing
                 </Link>
                 <Link
                   href='/privacy-policy'
