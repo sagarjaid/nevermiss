@@ -107,8 +107,22 @@ const DynamicPage = ({ params }: { params: Params }) => {
         //   .eq('id', user.id); // Match the profile by user_id
 
         // if (error || profileErrorUpdate || profileErrorFetch) {
-        if (error) {
-          console.error('Error updating interview table:', error);
+
+        const { data: newProfileData, error: newProfileError } = await supabase
+          .from('profiles')
+          .update({
+            total_credits:
+              profileData?.total_credits > 0
+                ? profileData?.total_credits - 1
+                : profileData?.total_credits,
+          })
+          .eq('id', user?.id);
+
+        if (error || newProfileError || profileError) {
+          console.error(
+            'Error updating interview table:',
+            error || newProfileError || profileError
+          );
         }
       }
     } catch (error) {
