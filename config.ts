@@ -71,7 +71,7 @@ const config = {
     plans: [
       {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
-        variantId: '563171',
+        variantId: '562905',
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: 'Success Plan',
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others.
