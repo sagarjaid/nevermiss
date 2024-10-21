@@ -268,8 +268,9 @@ const Pricing = ({ hide }: { hide: boolean }) => {
               )}
 
               <div className='space-y-2'>
-                <ButtonCheckout priceId={'eqeutqeugeb'} />
-
+                <ButtonCheckout
+                  variantId={config.lemonsqueezy.plans[0].variantId}
+                />
                 <p className='flex items-center justify-center gap-2 text-xs mt-3 text-center text-base-content/80 font-medium relative'>
                   Pay once. Access until you get your visa.
                 </p>
