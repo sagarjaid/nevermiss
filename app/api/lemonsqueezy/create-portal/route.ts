@@ -31,6 +31,8 @@ export async function POST() {
         customerId: profile?.customer_id,
       });
 
+      console.log(url, 'url');
+
       return NextResponse.json({
         url,
       });

@@ -44,7 +44,7 @@ const UserInfo = () => {
 
     try {
       const { url }: { url: string } = await apiClient.post(
-        '/stripe/create-portal',
+        '/lemonsqueezy/create-portal',
         {
           returnUrl: window.location.href,
         }
@@ -158,14 +158,12 @@ const UserInfo = () => {
               <img
                 src={user?.user_metadata?.avatar_url}
                 alt={'Profile picture'}
-                className='w-32 h-32 rounded-full shrink-0'
+                className='w-24 h-24 rounded-full shrink-0'
                 referrerPolicy='no-referrer'
-                width={20}
-                height={20}
               />
             ) : (
               <svg
-                className='w-32 h-32'
+                className='w-24 h-24'
                 fill='none'
                 strokeWidth={1.5}
                 stroke='currentColor'
@@ -187,10 +185,11 @@ const UserInfo = () => {
                 'Account'}
             </span>
             <span>Email : {user?.email || 'example@gmail.com'}</span>
-            <span>Upload your cv/resume: coming soon...</span>
+            <hr className='mt-3' />
+            {/* <span>Upload your cv/resume: coming soon...</span> */}
           </div>
 
-          <button
+          {/* <button
             className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
             onClick={() => (window.location.href = '/pricing')}>
             <svg
@@ -208,30 +207,30 @@ const UserInfo = () => {
               />
             </svg>
             Pricing
-          </button>
-
-          {/* <button
-                    className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
-                    onClick={handleBilling}>
-                    <svg
-                      className='w-5 h-5'
-                      fill='none'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                      xmlns='http://www.w3.org/2000/svg'
-                      aria-hidden='true'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        d='M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z'
-                      />
-                    </svg>
-                    My plans
-                  </button> */}
+          </button> */}
 
           <button
-            className='flex items-center gap-2 hover:bg-rose-200 duration-200 p-1.5   w-full rounded-lg font-medium'
+            className='flex items-center gap-2 hover:bg-base-300 duration-200 p-1.5   w-full rounded-lg font-medium'
+            onClick={handleBilling}>
+            <svg
+              className='w-5 h-5'
+              fill='none'
+              strokeWidth={1.5}
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              xmlns='http://www.w3.org/2000/svg'
+              aria-hidden='true'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3'
+              />
+            </svg>
+            {isLoading ? 'Redirecting..' : 'Manage Billing'}
+          </button>
+
+          <button
+            className='flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 p-1.5 w-full rounded-md font-medium'
             onClick={handleSignOut}>
             <svg
               className='w-5 h-5'

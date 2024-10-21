@@ -45,56 +45,71 @@ const DynamicPage = ({ params }: { params: Params }) => {
   const getBaseQuestions = async () => {
     try {
       setCheckingPermissions(true);
-      const resData1 = await callApi('/api/get-questions', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const arr = JSON.parse(resData1?.result);
-      const baseInterviewQuestionsArr = arr.balancedInterviewQuestionsArr;
-
-      // Update the state with the base questions array
-      setBaseInterviewQuestions(baseInterviewQuestionsArr);
-
-      setCheckingPermissions(false);
 
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      // Prepare your interview data for insertion into the database
-      const interviewData = {
-        interview_id: id, // Generate a new UUID for the interview_id
-        user_id: user.id, // Set the user_id (replace with the correct user_id)
-        base_interview_questions: baseInterviewQuestionsArr,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      // Insert the new row into the 'interviews' table
-      const { data, error } = await supabase
-        .from('interviews')
-        .insert([interviewData]);
-
-      // Fetch the current channels array
-      const { data: profileData, error: profileErrorFetch } = await supabase
+      // Fetch the user's profile from the 'profiles' table
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('interviews')
+        .select('total_credits')
         .eq('id', user.id)
         .single();
 
-      // Append the new channel_id to the channels array
-      const updateInterviews = [...(profileData.interviews || []), id];
+      if (profileError) throw profileError;
 
-      console.log(updateInterviews, 'updateInterviews');
+      if (profileData?.total_credits == 0) {
+        window.location.href = '/pricing';
+      } else {
+        const resData1 = await callApi('/api/get-questions', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
 
-      const { error: profileErrorUpdate } = await supabase
-        .from('profiles')
-        .update({ interviews: updateInterviews })
-        .eq('id', user.id); // Match the profile by user_id
+        const arr = JSON.parse(resData1?.result);
+        const baseInterviewQuestionsArr = arr.balancedInterviewQuestionsArr;
 
-      if (error || profileErrorUpdate || profileErrorFetch) {
-        console.error('Error updating interview table:', error);
+        // Update the state with the base questions array
+        setBaseInterviewQuestions(baseInterviewQuestionsArr);
+
+        setCheckingPermissions(false);
+
+        // Prepare your interview data for insertion into the database
+        const interviewData = {
+          interview_id: id, // Generate a new UUID for the interview_id
+          user_id: user.id, // Set the user_id (replace with the correct user_id)
+          base_interview_questions: baseInterviewQuestionsArr,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        // Insert the new row into the 'interviews' table
+        const { data, error } = await supabase
+          .from('interviews')
+          .insert([interviewData]);
+
+        // Fetch the current channels array
+        // const { data: profileData, error: profileErrorFetch } = await supabase
+        //   .from('profiles')
+        //   .select('interviews')
+        //   .eq('id', user.id)
+        //   .single();
+
+        // Append the new channel_id to the channels array
+        // const updateInterviews = [...(profileData.interviews || []), id];
+
+        // console.log(updateInterviews, 'updateInterviews');
+
+        // const { error: profileErrorUpdate } = await supabase
+        //   .from('profiles')
+        //   .update({ interviews: updateInterviews })
+        //   .eq('id', user.id); // Match the profile by user_id
+
+        // if (error || profileErrorUpdate || profileErrorFetch) {
+        if (error) {
+          console.error('Error updating interview table:', error);
+        }
       }
     } catch (error) {
       // If API call fails, use the default base questions

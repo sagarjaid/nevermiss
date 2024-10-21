@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
             customer_id: customerId,
             variant_id: variantId,
             has_access: true,
+            total_credits: 20,
           })
           .eq('id', user?.id);
 

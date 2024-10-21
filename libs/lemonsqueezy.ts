@@ -69,6 +69,8 @@ export const createCustomerPortal = async ({
 
     const { data, error } = await getCustomer(customerId);
 
+    console.log(data.data.attributes.urls, error, 'data');
+
     if (error) {
       throw error;
     }

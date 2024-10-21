@@ -39,25 +39,6 @@ const ButtonAccount = () => {
     window.location.href = '/';
   };
 
-  const handleBilling = async () => {
-    setIsLoading(true);
-
-    try {
-      const { url }: { url: string } = await apiClient.post(
-        '/lemonsqueezy/create-portal',
-        {
-          returnUrl: window.location.href,
-        }
-      );
-
-      window.location.href = url;
-    } catch (e) {
-      console.error(e);
-    }
-
-    setIsLoading(false);
-  };
-
   if (pathName.endsWith('/') && !user) {
     return (
       <button
@@ -208,7 +189,7 @@ const ButtonAccount = () => {
                     Submit Channel
                   </button> */}
 
-                    <button
+                    {/* <button
                       className='flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-md font-medium'
                       onClick={handleBilling}>
                       <svg
@@ -226,7 +207,7 @@ const ButtonAccount = () => {
                         />
                       </svg>
                       My plans
-                    </button>
+                    </button> */}
 
                     <button
                       className='flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-md font-medium'
