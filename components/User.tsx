@@ -50,7 +50,11 @@ const UserInfo = () => {
         }
       );
 
-      window.location.href = url;
+      if (url) {
+        window.open(url, '_blank');
+      } else {
+        window.open('https://app.lemonsqueezy.com/my-orders', '_blank');
+      }
     } catch (e) {
       console.error(e);
     }
