@@ -5,6 +5,7 @@ const Question = ({
   question,
   handleTextToSpeech,
   isSpeaking,
+  questionLength,
 }) => {
   return (
     <div className='flex w-full justify-between gap-2 border-b p-5'>
@@ -12,7 +13,10 @@ const Question = ({
         <div>Q{questionNumber}:</div>
         <div>{question}</div>
       </div>
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-3'>
+        <div className='text-sm'>
+          {questionNumber}/{questionLength}
+        </div>
         <div
           onClick={() => !isSpeaking && handleTextToSpeech(question)}
           className={`${

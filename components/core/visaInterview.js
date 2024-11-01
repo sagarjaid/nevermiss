@@ -148,6 +148,7 @@ const VisaInterview = ({ baseInterviewQuestions, interviewId }) => {
           questionNumber={
             baseInterviewQuestions[currentQuestionIndex].questionNumber
           }
+          questionLength={baseInterviewQuestions.length}
           question={baseInterviewQuestions[currentQuestionIndex].question}
           handleTextToSpeech={handleTextToSpeech}
           isSpeaking={isSpeaking}

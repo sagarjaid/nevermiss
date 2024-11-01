@@ -184,7 +184,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
   // console.log(baseInterviewQuestions, 'baseInterviewQuestions');
 
   useEffect(() => {
-    checkPermissions();
+    // checkPermissions();
 
     if (id && !hasFetchedRef.current) {
       getBaseQuestions();
@@ -282,7 +282,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
             </Suspense>
           </div>
 
-          {loading && baseInterviewQuestions && (
+          {checkingPermissions && (
             <div className='flex gap-2 justify-center items-center h-screen'>
               <Image
                 src='/loading.gif'
@@ -294,7 +294,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
             </div>
           )}
 
-          {checkingPermissions && (
+          {/* {checkingPermissions && (
             <div className='flex gap-2 justify-center items-center h-screen'>
               <Image
                 src='/loading.gif'
@@ -304,9 +304,9 @@ const DynamicPage = ({ params }: { params: Params }) => {
               />
               <div>Checking required permissions</div>
             </div>
-          )}
+          )} */}
 
-          {!isAccess.audio && !isAccess.video && (
+          {/* {!isAccess.audio && !isAccess.video && (
             <div className='flex flex-col max-w-96 items-center border rounded-md mt-20 gap-5 text-sm'>
               <div className='flex flex-col gap-4 p-4'>
                 <div className='flex flex-col justify-center items-center gap-3'>
@@ -328,7 +328,7 @@ const DynamicPage = ({ params }: { params: Params }) => {
                     Before We start the Interview
                   </div>
                 </div>
-                {/* <div>✅ You Only get 1 FREE Interview make best out of it</div> */}
+             // <div>✅ You Only get 1 FREE Interview make best out of it</div> 
                 <div>
                   ✅ Be prepared and assume this as your real US Visa interview,
                   Try giving your best to answer
@@ -345,9 +345,9 @@ const DynamicPage = ({ params }: { params: Params }) => {
               </div>
               <hr className='w-full' />
               <div className='flex w-full flex-col gap-3 items-center justify-center px-3 pb-4 pt-0'>
-                {/* <div className='text-xs'>
+                <div className='text-xs'>
                   Interview will start when you give the permissions
-                </div> */}
+                </div>
 
                 <div className=' flex flex-col gap-2 p-2 text-xs'>
                   <div className='flex justify-between gap-2'>
@@ -366,8 +366,8 @@ const DynamicPage = ({ params }: { params: Params }) => {
                 </button>
               </div>
             </div>
-          )}
-          {baseInterviewQuestions[0] && isAccess.audio && isAccess.video && (
+          )} */}
+          {baseInterviewQuestions[0] && !checkingPermissions && (
             <div className='flex flex-col gap-4 items-center justify-center'>
               <VisaInterview
                 baseInterviewQuestions={baseInterviewQuestions}
