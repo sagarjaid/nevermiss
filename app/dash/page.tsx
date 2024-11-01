@@ -7,6 +7,11 @@ import Navbar from '@/components/Navbar';
 import RightSidebar from '@/components/molecules/RightSidebar';
 import TakeInterviewCard from '@/components/molecules/TakeInterviewCard';
 
+import CallButton from '@/components/CallButton';
+import GetJobs from '@/components/GetJobs';
+import GetJob from '@/components/GetJob';
+import CreateJob from '@/components/CreateJob';
+
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Dashboard() {
@@ -37,6 +42,14 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className='flex w-full flex-col items-center max-w-lg justify-center gap-4'>
+                  <CallButton />
+
+                  <GetJobs />
+
+                  <GetJob />
+
+                  <CreateJob />
+
                   <div className='flex w-full flex-col items-center justify-center gap-4 sm:flex-row'>
                     <TakeInterviewCard generatedUUID={generatedUUID} />
                     <a

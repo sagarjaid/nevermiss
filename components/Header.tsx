@@ -79,11 +79,12 @@ const Header = () => {
             title={`${config.appName} homepage`}>
             <Image
               src={logo}
+              width={0}
               alt={`${config.appName} logo`}
               className='w-full'
-              priority={true}
-              width={130}
-              height={70}
+              height={0}
+              sizes='100vw'
+              style={{ width: '100%', height: 'auto' }} // optional
             />
           </Link>
         </div>

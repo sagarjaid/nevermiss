@@ -36,7 +36,7 @@ const ButtonCheckout = ({ variantId }: { variantId: string }) => {
       {pathName.endsWith('/') ? (
         <a
           href='/signin'
-          className='btn bg-green-600 hover:bg-green-700 disabled:bg-green-600 disabled:text-white rounded-sm text-white btn-block group'>
+          className='btn bg-orange-500 hover:bg-orange-500 disabled:bg-orange-500 disabled:text-white rounded-sm text-white btn-block group'>
           {isLoading ? (
             <span className='loading loading-spinner loading-xs'></span>
           ) : (
@@ -52,7 +52,7 @@ const ButtonCheckout = ({ variantId }: { variantId: string }) => {
         </a>
       ) : (
         <button
-          className='btn bg-green-600 hover:bg-green-700 disabled:bg-green-600 disabled:text-white rounded-sm text-white btn-block group'
+          className='btn bg-orange-500 hover:bg-orange-500 disabled:bg-orange-500 disabled:text-white rounded-sm text-white btn-block group'
           onClick={() => handlePayment()}>
           {isLoading ? (
             <span className='loading loading-spinner loading-xs'></span>
