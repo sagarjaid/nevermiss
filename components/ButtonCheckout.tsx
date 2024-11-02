@@ -12,7 +12,7 @@ const ButtonCheckout = ({
   planName,
 }: {
   variantId: string;
-  planName: string;
+  planName?: string;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const pathName = usePathname();
