@@ -10,7 +10,7 @@ const Plan = () => {
     <section
       className=' overflow-hidden'
       id='pricing'>
-      <div className='py-24 px-8 max-w-5xl mx-auto'>
+      <div className='pb-24 px-8 max-w-5xl mx-auto'>
         <div className='flex flex-col text-center w-full mb-20'>
           <p className='font-medium text-primary mb-8'>Limited time deals</p>
           <h2 className='font-bold text-3xl lg:text-5xl tracking-tight'>
@@ -18,26 +18,49 @@ const Plan = () => {
           </h2>
         </div>
 
-        <div className='relative flex justify-center flex-col lg:flex-row items-center lg:items-stretch gap-8'>
+        <div className='relative flex justify-center  flex-col lg:flex-row items-center lg:items-stretch gap-4'>
           {config.stripe.plans.map((plan) => (
             <div
               key={plan.priceId}
-              className='relative w-full max-w-lg'>
-              {plan.isFeatured && (
-                <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
-                  <span
-                    className={`badge text-xs text-primary-content font-semibold border-0 bg-primary`}>
-                    POPULAR
-                  </span>
-                </div>
+              className='relative w-full min-w-[80px] max-w-lg'>
+              {plan.isFeatured && plan.name === 'MASTER' && (
+                <>
+                  <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
+                    <span
+                      className={`badge text-xs text-primary-content font-semibold border-0 bg-primary`}>
+                      RECOMMENDED
+                    </span>
+                  </div>
+                  <div
+                    className={`absolute -inset-[1px] rounded-[9px] bg-primary z-10`}
+                  />
+                </>
               )}
 
-              {plan.isFeatured && (
-                <div
-                  className={`absolute -inset-[1px] rounded-[9px] bg-primary z-10`}></div>
+              {plan.isFeatured && plan.name === 'GOD' && (
+                <>
+                  <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
+                    <span
+                      className={`badge text-xs text-black font-semibold border-0 bg-orange-300`}>
+                      LIFETIME DEAL!
+                    </span>
+                  </div>
+
+                  <div
+                    className={`absolute -inset-[2px] rounded-[9px] bg-orange-300 z-10`}
+                  />
+                </>
               )}
 
-              <div className='relative flex flex-col h-full gap-5 lg:gap-8 z-10 bg-base-100 p-8 rounded-lg'>
+              {plan.name === 'HOBBY' && (
+                <>
+                  <div
+                    className={`absolute -inset-[1px] rounded-[9px] bg-black z-10`}
+                  />
+                </>
+              )}
+
+              <div className='relative flex flex-col h-full gap-5 lg:gap-8 z-10 bg-base-100 p-6 rounded-lg'>
                 <div className='flex justify-between items-center gap-4'>
                   <div>
                     <p className='text-lg lg:text-xl font-bold'>{plan.name}</p>
@@ -92,11 +115,28 @@ const Plan = () => {
                   </ul>
                 )}
                 <div className='space-y-2'>
-                  <ButtonCheckout variantId={plan.priceId} />
+                  <ButtonCheckout
+                    variantId={plan.priceId}
+                    planName={plan.name}
+                  />
 
-                  <p className='flex items-center justify-center gap-2 text-sm text-center text-base-content/80 font-medium relative'>
-                    Pay once. Access forever.
-                  </p>
+                  {plan.isFeatured && plan.name === 'GOD' && (
+                    <p className='flex items-center justify-center gap-2 text-sm text-center text-base-content/80 font-medium relative'>
+                      Pay once. Access forever.
+                    </p>
+                  )}
+
+                  {plan.isFeatured && plan.name === 'MASTER' && (
+                    <p className='flex items-center justify-center gap-2 text-sm text-center text-base-content/80 font-medium relative'>
+                      Try it for free
+                    </p>
+                  )}
+
+                  {plan.name === 'HOBBY' && (
+                    <p className='flex items-center justify-center gap-2 text-sm text-center text-base-content/80 font-medium relative'>
+                      Try it for free
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

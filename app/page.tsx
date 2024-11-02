@@ -18,11 +18,12 @@ import CTA from '@/components/CTA';
 import Plan from '@/components/Plan';
 import FooterBIg from '@/components/FooterBig';
 import FooterX from '@/components/Footer';
+import CtaBox from '@/components/CtaBox';
 
 export default function Home() {
   return (
     <>
-      <main className='flex flex-col gap-4 items-center w-full justify-center '>
+      <main className='flex flex-col gap-4 items-center w-full justify-center bg-gradient-to-t from-white via-orange-50 to-white'>
         {/* <div className='bg-green-500 text-white text-sm w-full flex justify-center items-center p-2 py-3'>
           We are working on few new features, Errors may occur
         </div> */}
@@ -31,9 +32,9 @@ export default function Home() {
             <Header />
           </Suspense>
         </div>
-        <div className='flex flex-col items-center w-full justify-center bg-gradient-to-t from-white via-orange-100 to-white'>
+        <div className='flex flex-col items-center w-full justify-center  bg-gradient-to-t from-white via-orange-200 to-white'>
           <div className='flex max-w-5xl w-full flex-col items-center justify-center '>
-            <div className='flex flex-col text-center items-center p-1 pt-20 text-base font-bold xs:text-xl sdm:text-3xl sm:gap-3 md:text-4xl mdx:text-5xl '>
+            <div className='flex flex-col text-center items-center p-4 pt-20 text-base font-bold xs:text-xl sdm:text-3xl sm:gap-3 md:text-4xl mdx:text-5xl '>
               <Headline />
             </div>
             <div className='flex flex-col items-center gap-4 pt-6 text-center text-gray-600 sm:text-base'>
@@ -97,7 +98,7 @@ export default function Home() {
 
           <Problem />
 
-          <FeaturesAccordion />
+          {/* <FeaturesAccordion /> */}
 
           {/* <Pricing hide={true} /> */}
 
@@ -142,7 +143,9 @@ export default function Home() {
         </div>
 
         <Plan />
-        <FAQ />
+        {/* <FAQ /> */}
+
+        <CtaBox />
       </main>
       {/* <FooterBIg /> */}
       <FooterX />

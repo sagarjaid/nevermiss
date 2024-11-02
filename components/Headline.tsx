@@ -19,16 +19,21 @@ const Headline = () => {
           }}
         /> */}
       </div>
-      <div className='flex gap-0 text-base font-medium '>
+      {/* <div className='flex gap-0 text-base font-medium '> */}
+      <div className='flex text-sm gap-1 flex-wrap'>
         {/* Remind yourself of your goals/tasks via ai call */}
-        Your Life Goals/Tasks Reminded by AI via call every-
-        <Typewriter
-          options={{
-            strings: ['day', 'week', 'month', 'year'],
-            autoStart: true,
-            loop: true,
-          }}
-        />
+        <span> Your Life Goals Reminded by AI call </span>
+
+        <span className='flex'>
+          every-
+          <Typewriter
+            options={{
+              strings: ['day!', 'week!', 'month!', 'year!'],
+              autoStart: true,
+              loop: true,
+            }}
+          />
+        </span>
       </div>
     </>
   );

@@ -77,7 +77,7 @@ const Problem = () => {
     <section className=' '>
       <div className='max-w-7xl mx-auto px-8 py-16 md:py-32 text-center'>
         <h2 className='max-w-3xl mx-auto font-extrabold text-4xl md:text-5xl tracking-tight mb-6 md:mb-8 leading-10'>
-          65% People just ignore reminders notifications set by themselves
+          75% People just ignore reminder notifications set by themselves
         </h2>
         <p className='max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20'>
           Not just a AI reminder app, here is how it works
@@ -85,7 +85,7 @@ const Problem = () => {
 
         <div className='flex flex-col md:flex-row justify-center items-center md:items-start gap-6'>
           <Step
-            emoji='🤩'
+            emoji='🤚'
             text='Create a Goal'
           />
 
