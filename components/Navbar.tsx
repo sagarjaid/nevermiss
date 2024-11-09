@@ -119,9 +119,9 @@ const Navbar = () => {
       slug: '/dash',
     },
     {
-      name: 'History',
+      name: 'Goals',
       svg: historySvg,
-      slug: '/history',
+      slug: '/goals',
     },
     {
       name: 'Pricing',

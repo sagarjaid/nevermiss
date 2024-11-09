@@ -20,7 +20,7 @@ const Headline = () => {
         /> */}
       </div>
       {/* <div className='flex gap-0 text-base font-medium '> */}
-      <div className='flex text-sm gap-1 flex-wrap'>
+      <div className='flex text-sm md:text-xl gap-1 flex-wrap'>
         {/* Remind yourself of your goals/tasks via ai call */}
         <span> Your Life Goals Reminded by AI call </span>
 

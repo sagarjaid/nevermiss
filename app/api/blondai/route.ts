@@ -14,24 +14,33 @@ export async function POST(request: Request) {
       Authorization: process.env.NEXT_PUBLIC_BLOND_AUTH,
     };
 
+    // const data: Record<string, any> = {
+    //   phone_number: '+918898720799',
+    //   task: 'Act as Gym couch and remind caller to go to the gym and track the progress. Remind me to go to the gym and track my progress by asking questions like are you hitting the gym today? what exercise you did do on the last day? what are you playing today? wish me the best day wait for 2 seconds and hangup the call.',
+    //   language: 'en',
+    //   voice: 'matt',
+    // };
+
     // Define the data payload for the API call
     const data: Record<string, any> = {
       phone_number: '+918898720799',
       from: null,
       task: 'Act as Gym couch and remind caller to go to the gym and track the progress. Remind me to go to the gym and track my progress by asking questions like are you hitting the gym today? what exercise you did do on the last day? what are you playing today? wish me the best day wait for 2 seconds and hangup the call.',
-      model: 'base',
+      model: 'enhanced',
       language: 'en',
-      voice: 'nat',
+      voice: 'matt',
       voice_settings: {},
       pathway_id: null,
       local_dialing: false,
-      max_duration: '5',
+      max_duration: '4',
       answered_by_enabled: false,
       wait_for_greeting: false,
       record: false,
       amd: false,
       interruption_threshold: 100,
       voicemail_message: null,
+      background_track: 'none',
+      voicemail_action: 'hangup',
       temperature: null,
       transfer_phone_number: null,
       transfer_list: {},

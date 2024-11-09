@@ -9,7 +9,7 @@ import logo from '@/app/logo.png';
 const FooterX = () => {
   return (
     <footer className='bg-gradient-to-t from-white via-orange-100 to-white w-full'>
-      <div className='max-w-5xl  mx-auto px-2 pb-32 pt-20'>
+      <div className='max-w-5xl  mx-auto px-4 pb-32 pt-20'>
         <div className=' flex lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col'>
           <div className='w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left'>
             <Link

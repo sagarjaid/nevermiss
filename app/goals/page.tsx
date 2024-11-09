@@ -69,11 +69,53 @@ export default function Dashboard() {
 
               <main className='flex gap-6 flex-col p-4 w-full'>
                 <div className='flex flex-col justify-start items-start text-sm  xs:text-lg sdm:text-xl sm:gap-3 md:text-2xl p-1'>
-                  <div className='font-semibold'>History</div>
+                  <div className='font-semibold'>Goals</div>
                   <div className='text-sm'>
-                    Your Interview history will be listed here
+                    Add new goals, review active goals and more
                   </div>
                 </div>
+
+                <a
+                  href='/add'
+                  className='flex  w-full cursor-pointer items-center justify-between gap-2 rounded-md p-4  border shadow-md hover:shadow-lg'>
+                  <div className='flex flex-col gap-1 '>
+                    {/* <svg
+                          className='w-10 h-10'
+                          fill='none'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                          xmlns='http://www.w3.org/2000/svg'
+                          aria-hidden='true'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3'
+                          />
+                        </svg> */}
+                    <svg
+                      className='w-10 h-10'
+                      fill='none'
+                      strokeWidth={1.5}
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                      xmlns='http://www.w3.org/2000/svg'
+                      aria-hidden='true'>
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M12 4.5v15m7.5-7.5h-15'
+                      />
+                    </svg>
+                    <div className='text-lg mt-2 font-semibold'>
+                      Add New Goal
+                    </div>
+                    <div className='text-xs text-gray-600'>
+                      Create a Goal, AI will call on your mobile number to
+                      remind your goal
+                    </div>
+                  </div>
+                </a>
 
                 {loading && <div>loading result history...</div>}
 
