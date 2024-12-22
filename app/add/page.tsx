@@ -1,11 +1,12 @@
+/** @format */
+
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import Header from '@/components/Header';
-// import ButtonSubmitYT from '@/components/ButtonSubmitYT';
-// import ChannelList from '@/components/ChannelList';
+import { User } from '@supabase/supabase-js';
+
 import Navbar from '@/components/Navbar';
-import { format } from 'date-fns';
 
 import { createClient } from '@/libs/supabase/client';
 import { useState } from 'react';
@@ -31,82 +32,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+
 export default function Dashboard() {
-  const supabase = createClient();
-
-  const [history, setHistory] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-
-  const [selectedTime, setSelectedTime] = useState<string>('12:00 AM');
-
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
-  const [selectedHour, setSelectedHour] = useState<number>(12);
-  const [selectedMinute, setSelectedMinute] = useState<number>(0);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('AM');
-
-  const [recurrenceType, setRecurrenceType] = useState<string>('');
-
-  // Handle date change
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-  };
-
-  // Handle time change
-  const handleTimeChange = (hour: number, minute: number, period: string) => {
-    setSelectedHour(hour);
-    setSelectedMinute(minute);
-    setSelectedPeriod(period);
-  };
-
-  const handleRecurrenceTypeChange = (value: string) => {
-    setRecurrenceType(value);
-    console.log('Selected Recurrence Type:', value);
-  };
-
-  const handleRecurrenceChange = (recurrence: string) => {
-    console.log('Selected Recurrence:', recurrence);
-  };
-
-  const handleDateTimeChange = (
-    date: Date,
-    hour: number,
-    minute: number,
-    period: string
-  ) => {
-    setSelectedDate(date);
-    setSelectedHour(hour);
-    setSelectedMinute(minute);
-    setSelectedPeriod(period);
-    console.log(
-      `Selected DateTime: ${format(date, 'yyyy-MM-dd')} ${hour}:${
-        minute < 10 ? `0${minute}` : minute
-      } ${period}`
-    );
-  };
-
-  const getResult = async () => {
-    setLoading(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const { data: resultData, error } = await supabase
-      .from('interviews')
-      .select('interview_id')
-      .eq('user_id', user.id);
-
-    setHistory(resultData.map((interview) => interview.interview_id));
-
-    console.log(resultData, 'resultData');
-    setLoading(false);
-  };
-
-  // useEffect(() => {
-  //   getResult();
-  // }, []);
-
   const text = {
     heading: {
       addYoutubeChannel: 'Add YouTube Channel',
@@ -183,30 +117,162 @@ export default function Dashboard() {
     },
   };
 
-  const languages = [
-    'English',
-    'Spanish',
-    'French',
-    'Chinese',
-    'Hindi',
-    'Arabic',
-    'Russian',
-    'German',
-    'Japanese',
-    'Indonesian',
-    'Vietnamese',
-    'Thai',
-    'Korean',
-    'Tamil',
-    'Marathi',
-    'Other',
-  ];
+  // const languages = [
+  //   'English',
+  //   'Spanish',
+  //   'French',
+  //   'Chinese',
+  //   'Hindi',
+  //   'Arabic',
+  //   'Russian',
+  //   'German',
+  //   'Japanese',
+  //   'Indonesian',
+  //   'Vietnamese',
+  //   'Thai',
+  //   'Korean',
+  //   'Tamil',
+  //   'Marathi',
+  // ];
+
+  const languages = ['English', 'Spanish', 'Chinese', 'Hindi'];
 
   const repeat = ['No', 'Yes'];
 
   const aiVoices = ['Male', 'Female'];
 
+  const supabase = createClient();
+
+  const [history, setHistory] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  const [goalName, setGoalName] = useState<string>('');
+  const [aiVoice, setAIVoice] = useState(aiVoices[0]); // Set the first value as default
+  const [language, setLanguage] = useState(languages[0]); // Set the first value as default
+  const [persona, setPersona] = useState<string>('');
+  const [context, setContext] = useState<string>('');
+  const [isRepeat, setIsRepeat] = useState(true); // Use boolean state
   const [isActive, setIsActive] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+
+  // const [selectedTime, setSelectedTime] = useState<string>('12:00 AM');
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  // const [selectedHour, setSelectedHour] = useState<number>(12);
+  // const [selectedMinute, setSelectedMinute] = useState<number>(0);
+  // const [selectedPeriod, setSelectedPeriod] = useState<string>('AM');
+
+  const [recurrenceType, setRecurrenceType] = useState<string>('');
+
+  const handleRepeat = (value: string) => {
+    setIsRepeat(value === 'true');
+  };
+
+  const handleDateChange = (date: Date) => {
+    console.log(date, 'date');
+
+    setSelectedDate(date);
+  };
+
+  // // Handle time change
+  // const handleTimeChange = (hour: number, minute: number, period: string) => {
+  //   setSelectedHour(hour);
+  //   setSelectedMinute(minute);
+  //   setSelectedPeriod(period);
+  // };
+
+  const [hour, setHour] = useState<number>(10); // Default: 10 AM
+  const [minute, setMinute] = useState<number>(0); // Default: 00
+  const [period, setPeriod] = useState<string>('AM'); // Default: AM
+
+  // Function to get current local time
+  const getCurrentTime = () => {
+    const now = new Date();
+    let hour = now.getHours();
+    const minute = Math.round(now.getMinutes() / 5) * 5; // Round to nearest 5
+    const period = hour >= 12 ? 'PM' : 'AM';
+
+    if (hour > 12) hour -= 12; // Convert to 12-hour format
+    if (hour === 0) hour = 12; // Handle midnight as 12 AM
+
+    return { hour, minute, period };
+  };
+
+  useEffect(() => {
+    const { hour, minute, period } = getCurrentTime();
+    setHour(hour);
+    setMinute(minute);
+    setPeriod(period);
+  }, []);
+
+  const handleTimeChange = (
+    selectedHour: number,
+    selectedMinute: number,
+    selectedPeriod: string
+  ) => {
+    // Increment hour if minute is 55 or greater
+    if (selectedMinute >= 55) {
+      if (selectedHour === 12) {
+        // If hour is 12, switch to 1
+        selectedHour = 1;
+        selectedPeriod = selectedPeriod === 'AM' ? 'PM' : 'AM';
+      } else {
+        selectedHour = (selectedHour % 12) + 1;
+      }
+      selectedMinute = 0;
+    }
+
+    setHour(selectedHour);
+    setMinute(selectedMinute);
+    setPeriod(selectedPeriod);
+  };
+
+  const handleRecurrenceChange = (recurrence: string) => {
+    console.log('Selected Recurrence:', recurrence);
+    setRecurrenceType(recurrence);
+  };
+
+  // const handleDateTimeChange = (
+  //   date: Date,
+  //   hour: number,
+  //   minute: number,
+  //   period: string
+  // ) => {
+  //   setSelectedDate(date);
+  //   setSelectedHour(hour);
+  //   setSelectedMinute(minute);
+  //   setSelectedPeriod(period);
+  //   console.log(
+  //     `Selected DateTime: ${format(date, 'yyyy-MM-dd')} ${hour}:${
+  //       minute < 10 ? `0${minute}` : minute
+  //     } ${period}`
+  //   );
+  // };
+
+  // const getResult = async () => {
+  //   setLoading(true);
+  //   const {
+  //     data: { user },
+  //   } = await supabase.auth.getUser();
+
+  //   const { data: resultData, error } = await supabase
+  //     .from('interviews')
+  //     .select('interview_id')
+  //     .eq('user_id', user.id);
+
+  //   setHistory(resultData.map((interview) => interview.interview_id));
+
+  //   console.log(resultData, 'resultData');
+  //   setLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   getResult();
+  // }, []);
 
   const handleToggle = (value: boolean) => {
     setIsActive(value);
@@ -216,6 +282,21 @@ export default function Dashboard() {
   const handleClick = () => {
     console.log('Create a Goal button clicked!');
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setUser(user);
+      setPhoneNumber(user?.phone || '');
+    };
+
+    getUser();
+  }, [supabase]);
+
+  // console.log(user, 'user');
 
   return (
     <>
@@ -288,8 +369,8 @@ export default function Dashboard() {
                       className='placeholder:text-xs'
                       placeholder='Gym reminder'
                       maxLength={100}
-                      value={''}
-                      // onChange={(e) => setChannelOwnerName(e.target.value)}
+                      value={goalName}
+                      onChange={(e) => setGoalName(e.target.value)}
                       required
                     />
                   </div>
@@ -322,26 +403,24 @@ export default function Dashboard() {
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div className='relative w-full'>
-                      <select
-                        // onChange={(e) => setCategory(e.target.value)}
-                        className='block appearance-none w-full text-sm bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none'>
-                        {aiVoices.map((el, i) => (
-                          <option
-                            key={i}
-                            value={el}>
-                            {el}
-                          </option>
-                        ))}
-                      </select>
-                      <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                        <svg
-                          className='fill-current h-4 w-4'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 20 20'>
-                          <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
-                        </svg>
-                      </div>
+
+                    <div className=' w-full'>
+                      <Select
+                        value={aiVoice}
+                        onValueChange={(value) => setAIVoice(value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select Voice' />
+                        </SelectTrigger>
+                        <SelectContent className='w-full'>
+                          {aiVoices.map((el, i) => (
+                            <SelectItem
+                              key={i}
+                              value={el}>
+                              {el}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
@@ -372,26 +451,23 @@ export default function Dashboard() {
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div className='relative w-full'>
-                      <select
-                        // onChange={(e) => setLanguage(e.target.value)}
-                        className='block appearance-none w-full text-sm bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none'>
-                        {languages.map((el, i) => (
-                          <option
-                            key={i}
-                            value={el}>
-                            {el}
-                          </option>
-                        ))}
-                      </select>
-                      <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                        <svg
-                          className='fill-current h-4 w-4'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 20 20'>
-                          <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
-                        </svg>
-                      </div>
+                    <div className=' w-full'>
+                      <Select
+                        value={language}
+                        onValueChange={(value) => setLanguage(value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select Voice' />
+                        </SelectTrigger>
+                        <SelectContent className='w-full'>
+                          {languages.map((el, i) => (
+                            <SelectItem
+                              key={i}
+                              value={el}>
+                              {el}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   {/* </div> */}
@@ -439,15 +515,17 @@ export default function Dashboard() {
 
                     <PhoneInput
                       country={'in'}
+                      value={phoneNumber || ''}
+                      disabled={true}
                       inputStyle={{
                         fontFamily: 'Bricolage Grotesque',
-                        padding: '8px 14px 8px 60px', // Padding can be dynamically set here if required
+                        padding: '8px 14px 8px 60px',
                         color: '#0D0A09',
                         width: '100%',
                         border: '1px solid #E7E5E4',
                         borderRadius: '6px',
                         fontSize: '14px',
-                        lineHeight: '19px ',
+                        lineHeight: '19px',
                       }}
                       inputProps={{
                         required: true,
@@ -456,7 +534,7 @@ export default function Dashboard() {
                             style: { border: string; boxShadow: string };
                           };
                         }) => {
-                          (e.target.style.border = ' 2px solid #015ECC'), // Focus state border color
+                          (e.target.style.border = ' 1px solid #000000'), // Focus state border color
                             (e.target.style.boxShadow = 'none'); // Box-shadow on focus
                         },
                         onBlur: (e: {
@@ -500,8 +578,8 @@ export default function Dashboard() {
                       placeholder='Act as gym coach'
                       className='placeholder:text-xs'
                       maxLength={100}
-                      value={''}
-                      // onChange={(e) => setChannelOwnerName(e.target.value)}
+                      value={persona}
+                      onChange={(e) => setPersona(e.target.value)}
                       required
                     />
                   </div>
@@ -535,6 +613,8 @@ export default function Dashboard() {
                     </div>
 
                     <Textarea
+                      value={context}
+                      onChange={(e) => setContext(e.target.value)}
                       placeholder='Remind me to go to the gym, ask about my last workout, today’s plan, motivate me if required and wish a great day ahead.'
                       className='placeholder:text-xs h-32'
                     />
@@ -568,10 +648,12 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
 
-                    <DatePicker
-                      selectedDate={selectedDate}
-                      onDateChange={handleDateChange}
-                    />
+                    <div>
+                      <DatePicker
+                        selectedDate={selectedDate}
+                        onDateChange={handleDateChange}
+                      />
+                    </div>
                   </div>
 
                   <div className='flex flex-col gap-3 w-full'>
@@ -602,10 +684,19 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
 
-                    <TimePicker
+                    {/* <TimePicker onTimeChange={handleTimeChange} /> */}
+
+                    {/* <TimePicker
                       selectedHour={selectedHour}
                       selectedMinute={selectedMinute}
                       selectedPeriod={selectedPeriod}
+                      onTimeChange={handleTimeChange}
+                    /> */}
+
+                    <TimePicker
+                      selectedHour={hour}
+                      selectedMinute={minute}
+                      selectedPeriod={period}
                       onTimeChange={handleTimeChange}
                     />
                   </div>
@@ -638,63 +729,60 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
 
-                    <div className='relative w-full'>
-                      <select
-                        // onChange={(e) => setLanguage(e.target.value)}
-                        className='block appearance-none w-full text-sm bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none'>
-                        {repeat.map((el, i) => (
-                          <option
-                            key={i}
-                            value={el}>
-                            {el}
-                          </option>
-                        ))}
-                      </select>
-                      <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                        <svg
-                          className='fill-current h-4 w-4'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 20 20'>
-                          <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
-                        </svg>
-                      </div>
+                    <div className=' w-full'>
+                      <Select
+                        value={isRepeat.toString()}
+                        onValueChange={handleRepeat}>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select Repeat'>
+                            {isRepeat ? 'Yes' : 'No'}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className='w-full'>
+                          <SelectItem value='true'>Yes</SelectItem>
+                          <SelectItem value='false'>No</SelectItem>
+                          {/* Pass "false" as a string */}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
-                  <div className='flex flex-col gap-1 w-[60%]'>
-                    <div className='flex gap-1.5'>
-                      <div className='text-sm'>
-                        {text.label.repeatEvery.name}
+                  {isRepeat && (
+                    <div className='flex flex-col gap-1 w-[60%]'>
+                      <div className='flex gap-1.5'>
+                        <div className='text-sm'>
+                          {text.label.repeatEvery.name}
+                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <svg
+                                className='w-3.5 h-3.5'
+                                fill='none'
+                                strokeWidth={1.5}
+                                stroke='currentColor'
+                                viewBox='0 0 24 24'
+                                xmlns='http://www.w3.org/2000/svg'
+                                aria-hidden='true'>
+                                <path
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
+                                />
+                              </svg>
+                            </TooltipTrigger>
+                            <TooltipContent side='right'>
+                              <p>{text.label.repeatEvery.toolTip}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <svg
-                              className='w-3.5 h-3.5'
-                              fill='none'
-                              strokeWidth={1.5}
-                              stroke='currentColor'
-                              viewBox='0 0 24 24'
-                              xmlns='http://www.w3.org/2000/svg'
-                              aria-hidden='true'>
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
-                              />
-                            </svg>
-                          </TooltipTrigger>
-                          <TooltipContent side='right'>
-                            <p>{text.label.repeatEvery.toolTip}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
 
-                    <RecurrencePicker
-                      onRecurrenceChange={handleRecurrenceChange}
-                    />
-                  </div>
+                      <RecurrencePicker
+                        onRecurrenceChange={handleRecurrenceChange}
+                      />
+                    </div>
+                  )}
 
                   <div className='flex flex-col gap-3 w-full'>
                     <div className='flex gap-1.5'>

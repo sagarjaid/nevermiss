@@ -1,4 +1,6 @@
-import React from 'react';
+/** @format */
+
+import React, { useEffect, useState } from 'react';
 import {
   Select,
   SelectTrigger,
@@ -15,7 +17,6 @@ interface TimePickerProps {
   onTimeChange: (hour: number, minute: number, period: string) => void;
 }
 
-// Helper functions
 const generateHourOptions = () => Array.from({ length: 12 }, (_, i) => i + 1);
 const generateMinuteOptions = () =>
   Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
@@ -31,34 +32,48 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   const minuteOptions = generateMinuteOptions();
   const periodOptions = generatePeriodOptions();
 
-  // Handle time changes
+  const [hour, setHour] = useState<number>(selectedHour);
+  const [minute, setMinute] = useState<number>(selectedMinute);
+  const [period, setPeriod] = useState<string>(selectedPeriod);
+
+  useEffect(() => {
+    setHour(selectedHour);
+    setMinute(selectedMinute);
+    setPeriod(selectedPeriod);
+  }, [selectedHour, selectedMinute, selectedPeriod]);
+
   const handleHourChange = (value: string) => {
-    onTimeChange(parseInt(value, 10), selectedMinute, selectedPeriod);
+    const newHour = parseInt(value, 10);
+    setHour(newHour);
+    onTimeChange(newHour, minute, period);
   };
 
   const handleMinuteChange = (value: string) => {
-    onTimeChange(selectedHour, parseInt(value, 10), selectedPeriod);
+    const newMinute = parseInt(value, 10);
+    setMinute(newMinute);
+    onTimeChange(hour, newMinute, period);
   };
 
   const handlePeriodChange = (value: string) => {
-    onTimeChange(selectedHour, selectedMinute, value);
+    setPeriod(value);
+    onTimeChange(hour, minute, value);
   };
 
   return (
     <div className='flex gap-2'>
       {/* Hour Dropdown */}
       <Select
-        value={selectedHour.toString()}
+        value={hour.toString()}
         onValueChange={handleHourChange}>
         <SelectTrigger className='w-16'>
-          <SelectValue placeholder='Hour' />
+          <SelectValue placeholder='Hour'>{hour}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {hourOptions.map((hour) => (
+          {hourOptions.map((hourOption) => (
             <SelectItem
-              key={hour}
-              value={hour.toString()}>
-              {hour}
+              key={hourOption}
+              value={hourOption.toString()}>
+              {hourOption}
             </SelectItem>
           ))}
         </SelectContent>
@@ -66,17 +81,19 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
       {/* Minute Dropdown */}
       <Select
-        value={selectedMinute.toString()}
+        value={minute.toString()}
         onValueChange={handleMinuteChange}>
         <SelectTrigger className='w-16'>
-          <SelectValue placeholder='Minute' />
+          <SelectValue placeholder='Minute'>
+            {minute.toString().padStart(2, '0')}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {minuteOptions.map((minute) => (
+          {minuteOptions.map((minuteOption) => (
             <SelectItem
-              key={minute}
-              value={minute}>
-              {minute}
+              key={minuteOption}
+              value={minuteOption}>
+              {minuteOption}
             </SelectItem>
           ))}
         </SelectContent>
@@ -84,17 +101,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
       {/* AM/PM Dropdown */}
       <Select
-        value={selectedPeriod}
+        value={period}
         onValueChange={handlePeriodChange}>
         <SelectTrigger className='w-16'>
-          <SelectValue placeholder='AM/PM' />
+          <SelectValue placeholder='AM/PM'>{period}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {periodOptions.map((period) => (
+          {periodOptions.map((periodOption) => (
             <SelectItem
-              key={period}
-              value={period}>
-              {period}
+              key={periodOption}
+              value={periodOption}>
+              {periodOption}
             </SelectItem>
           ))}
         </SelectContent>
@@ -102,3 +119,5 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     </div>
   );
 };
+
+export default TimePicker;

@@ -1,3 +1,5 @@
+/** @format */
+
 import { NextResponse, NextRequest } from 'next/server';
 import { createClient } from '@/libs/supabase/server';
 import config from '@/config';

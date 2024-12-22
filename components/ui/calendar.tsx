@@ -1,22 +1,41 @@
+/** @format */
+
 'use client';
 
 import * as React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { DayPicker } from 'react-day-picker';
-
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+interface CalendarProps {
+  className?: string;
+  classNames?: Record<string, string>;
+  selected: Date;
+  onSelect: (date: Date) => void;
+  showOutsideDays?: boolean;
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  ...props
+  selected,
+  onSelect,
 }: CalendarProps) {
+  // Get today's date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to midnight to compare only the date
+
+  const handleDayClick = (date: Date) => {
+    // Call the onSelect function passed from the parent
+    onSelect(date);
+  };
+
   return (
     <DayPicker
+      selected={selected}
+      onDayClick={handleDayClick} // Using onDayClick instead of onSelect
       showOutsideDays={showOutsideDays}
       className={cn('p-3', className)}
       classNames={{
@@ -38,35 +57,25 @@ function Calendar({
         row: 'flex w-full mt-2',
         cell: cn(
           'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md',
-          props.mode === 'range'
-            ? '[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md'
-            : '[&:has([aria-selected])]:rounded-md'
+          'rounded-md' // Default styling, you can adjust further
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
           'h-8 w-8 p-0 font-normal aria-selected:opacity-100'
         ),
-        day_range_start: 'day-range-start',
-        day_range_end: 'day-range-end',
         day_selected:
           'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
         day_today: 'bg-accent text-accent-foreground',
         day_outside:
           'day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
         day_disabled: 'text-muted-foreground opacity-50',
-        day_range_middle:
-          'aria-selected:bg-accent aria-selected:text-accent-foreground',
-        day_hidden: 'invisible',
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ ...props }) => <ChevronLeftIcon className='h-4 w-4' />,
-        IconRight: ({ ...props }) => <ChevronRightIcon className='h-4 w-4' />,
-      }}
-      {...props}
+      disabled={{ before: today }} // Disable past dates
     />
   );
 }
+
 Calendar.displayName = 'Calendar';
 
 export { Calendar };

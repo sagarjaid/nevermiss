@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useEffect } from 'react';
 import {
   Select,
@@ -58,7 +60,15 @@ const RecurrencePicker: React.FC<RecurrencePickerProps> = ({
   // Handle recurrence option change
   const handleRecurrenceOptionChange = (option: string) => {
     setRecurrenceOption(option);
-    onRecurrenceChange(`${recurrenceType}: ${option}`);
+    if (option === 'Specific day') {
+      const currentDay = new Date()
+        .toLocaleDateString('en-US', { weekday: 'long' })
+        .toLowerCase(); // Default to current day
+      setSpecificDay(currentDay);
+      onRecurrenceChange(`${recurrenceType}: Specific day (${currentDay})`);
+    } else {
+      onRecurrenceChange(`${recurrenceType}: ${option}`);
+    }
   };
 
   // Handle specific day selection
@@ -72,6 +82,15 @@ const RecurrencePicker: React.FC<RecurrencePickerProps> = ({
     const firstOption = recurrenceOptions[recurrenceType]?.[0] || '';
     setRecurrenceOption(firstOption); // Set to first option
     onRecurrenceChange(`${recurrenceType}: ${firstOption}`); // Propagate change
+
+    // Set default specific day if "Specific day" is the first option
+    if (firstOption === 'Specific day') {
+      const currentDay = new Date()
+        .toLocaleDateString('en-US', { weekday: 'long' })
+        .toLowerCase(); // Get current day in lowercase
+      setSpecificDay(currentDay);
+      onRecurrenceChange(`${recurrenceType}: Specific day (${currentDay})`);
+    }
   }, [recurrenceType]);
 
   return (

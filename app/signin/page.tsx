@@ -1,24 +1,41 @@
+/** @format */
+
 'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/libs/supabase/client';
-import { Provider, User } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 import toast from 'react-hot-toast';
 import config from '@/config';
 import { useRouter } from 'next/navigation';
 
-// This a login/singup page for Supabase Auth.
-// Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
+import { Input } from '@/components/ui/input';
+
+import PhoneInput from 'react-phone-input-2';
+
+import 'react-phone-input-2/lib/bootstrap.css';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { log } from 'node:console';
+
 export default function Login() {
   const supabase = createClient();
   const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [showOtp, setShowOtp] = useState<boolean>(false);
 
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
 
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -36,57 +53,88 @@ export default function Login() {
     window.location.href = '/dash';
   }
 
-  const handleSignup = async (
-    e: any,
-    options: {
-      type: string;
-      provider?: Provider;
-    }
-  ) => {
-    e?.preventDefault();
+  console.log(user, 'user');
 
+  const sendOTP = async () => {
+    if (!phoneNumber) {
+      toast.error('Phone number is required!');
+      return;
+    }
+    console.log(phoneNumber, 'phoneNumber');
     setIsLoading(true);
 
     try {
-      const { type, provider } = options;
-      const redirectURL = window.location.origin + '/api/auth/callback';
-
-      if (type === 'oauth') {
-        await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: redirectURL,
-          },
-        });
-      } else if (type === 'magic_link') {
-        await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: redirectURL,
-          },
-        });
-
-        toast.success('Check your emails!');
-
-        setIsDisabled(true);
+      const { data, error } = await supabase.auth.signInWithOtp({
+        phone: `+${phoneNumber}`,
+      });
+      if (error) {
+        toast.error(`Error: ${error.message || error.code}`);
+        setShowOtp(false);
+      } else {
+        toast.success('OTP sent successfully!');
+        setShowOtp(true);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error(error);
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const verifyOtp = async (e: any) => {
+    e.preventDefault();
+
+    if (!otp) {
+      toast.error('Please enter the OTP!');
+      return;
+    }
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        phone: phoneNumber,
+        token: otp,
+        type: 'sms',
+      });
+
+      if (error) {
+        toast.error(`Error: ${error.message || error.code}`);
+      } else {
+        toast.success('OTP verified successfully!');
+        const redirectURL = `${window.location.origin}/api/auth/callback`;
+
+        // Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
+        router.push(redirectURL);
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const text = {
+    heading: 'Login with OTP',
+    label: {
+      phoneNumber: 'Phone Number',
+      otp: 'OTP',
+      otpTooltip: 'Enter the OTP sent to your phone',
+      tooltip: 'AI will call you on this number',
+    },
+  };
+
   return (
     <main>
-      <div className='flex justify-center items-center h-svh'>
+      <div className='flex justify-center items-center h-screen'>
         <div
-          className='p-8 md:p-24 flex flex-col justify-center items-center border w-fit rounded-md'
+          className='p-8 md:p-10 flex flex-col gap-4 justify-center items-center border w-fit rounded-md'
           data-theme={config.colors.theme}>
-          <div className='text-center mb-4'>
+          <div className='flex flex-col w-full gap-4'>
             <Link
               href='/'
-              className='btn btn-ghost btn-sm'>
+              className='flex items-center text-[10px] text-gray-700 max-w-fit'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 20 20'
@@ -100,74 +148,128 @@ export default function Login() {
               </svg>
               Home
             </Link>
+
+            <h1 className='text-xl md:text-2xl font-extrabold tracking-tight'>
+              {text.heading}
+            </h1>
+
+            <hr />
           </div>
-          <h1 className='text-xl md:text-2xl font-extrabold tracking-tight text-center mb-6'>
-            Signup/Login
-          </h1>
 
-          <div className='space-y-8 max-w-xl mx-auto'>
-            <button
-              className='btn btn-block'
-              onClick={(e) =>
-                handleSignup(e, { type: 'oauth', provider: 'google' })
-              }
-              disabled={isLoading}>
-              {isLoading ? (
-                <span className='loading loading-spinner loading-xs'></span>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-6 h-6'
-                  viewBox='0 0 48 48'>
-                  <path
-                    fill='#FFC107'
-                    d='M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z'
-                  />
-                  <path
-                    fill='#FF3D00'
-                    d='m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z'
-                  />
-                  <path
-                    fill='#4CAF50'
-                    d='M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z'
-                  />
-                  <path
-                    fill='#1976D2'
-                    d='M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z'
-                  />
-                </svg>
-              )}
-              Continue with Google
-            </button>
-            {/* <div className="divider text-xs text-base-content/50 font-medium">
-          OR
-        </div>
+          <div className='flex flex-col gap-4 w-full min-w-[300px] min-h-[200px]'>
+            {!showOtp && (
+              <>
+                <div className='flex flex-col gap-2 max-w-xl w-full'>
+                  <div className='flex gap-1.5'>
+                    <div className='text-sm'>{text.label.phoneNumber}</div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <svg
+                            className='w-3.5 h-3.5'
+                            fill='none'
+                            strokeWidth={1.5}
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'
+                            xmlns='http://www.w3.org/2000/svg'
+                            aria-hidden='true'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
+                            />
+                          </svg>
+                        </TooltipTrigger>
+                        <TooltipContent side='right'>
+                          <p>{text.label.tooltip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
 
-        <form
-          className="form-control w-full space-y-4"
-          onSubmit={(e) => handleSignup(e, { type: "magic_link" })}
-        >
-          <input
-            required
-            type="email"
-            value={email}
-            autoComplete="email"
-            placeholder="tom@cruise.com"
-            className="input input-bordered w-full placeholder:opacity-60"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <button
-            className="btn btn-primary btn-block"
-            disabled={isLoading || isDisabled}
-            type="submit"
-          >
-            {isLoading && (
-              <span className="loading loading-spinner loading-xs"></span>
+                  <PhoneInput
+                    country={'in'}
+                    value={phoneNumber}
+                    onChange={(phone) => setPhoneNumber(phone)}
+                    inputStyle={{
+                      fontFamily: 'Bricolage Grotesque',
+                      padding: '8px 14px 8px 60px',
+                      color: '#0D0A09',
+                      width: '100%',
+                      border: '1px solid #E7E5E4',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      lineHeight: '19px',
+                    }}
+                    inputProps={{
+                      required: true,
+                      onFocus: (e: {
+                        target: {
+                          style: { border: string; boxShadow: string };
+                        };
+                      }) => {
+                        (e.target.style.border = ' 1px solid #015ECC'), // Focus state border color
+                          (e.target.style.boxShadow = 'none'); // Box-shadow on focus
+                      },
+                      onBlur: (e: {
+                        target: { style: { border: string } };
+                      }) => {
+                        e.target.style.border = '1px solid #E7E5E4'; // Blur state resets the border
+                      },
+                    }}
+                  />
+                </div>
+                <Button
+                  onClick={sendOTP}
+                  disabled={isLoading}>
+                  {isLoading ? 'Sending...' : 'Send OTP'}
+                </Button>
+              </>
             )}
-            Send Magic Link
-          </button>
-        </form> */}
+
+            {showOtp && (
+              <div className='flex text-md flex-col gap-2 w-full'>
+                <div className='flex gap-1.5'>
+                  <div className='text-sm'>{text.label.otp}</div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <svg
+                          className='w-3.5 h-3.5'
+                          fill='none'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                          xmlns='http://www.w3.org/2000/svg'
+                          aria-hidden='true'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z'
+                          />
+                        </svg>
+                      </TooltipTrigger>
+                      <TooltipContent side='right'>
+                        <p>{text.label.otpTooltip}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+
+                <Input
+                  type='text'
+                  placeholder='Enter OTP'
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                />
+                <Button
+                  onClick={verifyOtp}
+                  disabled={isLoading}>
+                  {isLoading ? 'Verifying...' : 'Verify OTP'}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

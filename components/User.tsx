@@ -1,4 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
+/**
+ * eslint-disable @next/next/no-img-element
+ *
+ * @format
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -61,6 +66,8 @@ const UserInfo = () => {
 
     setIsLoading(false);
   };
+
+  console.log(user, 'user');
 
   const pricingSvg = (
     <svg
@@ -186,9 +193,12 @@ const UserInfo = () => {
               Name :{' '}
               {user?.user_metadata?.name ||
                 user?.email?.split('@')[0] ||
-                'Account'}
+                'User'}
             </span>
-            <span>Email : {user?.email || 'example@gmail.com'}</span>
+
+            {user?.email && <span>Email : {user?.email}</span>}
+
+            {user?.phone && <span>Phone : +{user?.phone}</span>}
             <hr className='mt-3' />
             {/* <span>Upload your cv/resume: coming soon...</span> */}
           </div>
