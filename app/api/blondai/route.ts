@@ -13,8 +13,12 @@ export async function POST(request: Request) {
     // Parse the request body
     const body = await request.json();
 
-    if (body.phone_number || body.task == undefined) {
+    console.log(body, 'body');
+
+    if (body.phoneNumber || body.task == undefined) {
       // Return an error if the required fields are missing
+      console.log('400 got called');
+
       return NextResponse.json(
         { error: 'Missing required fields: phone_number, task' },
         { status: 400 }
@@ -28,7 +32,7 @@ export async function POST(request: Request) {
 
     // Create the data object for the API call based on the received body
     const data: Record<string, any> = {
-      phone_number: body.phone_number,
+      phone_number: body.phoneNumber,
       from: null,
       task: body.task,
       model: 'enhanced',
@@ -67,6 +71,8 @@ export async function POST(request: Request) {
       data,
       { headers: apiHeaders }
     );
+
+    console.log('called placed successfully', response.data);
 
     // Return the response from the external API as JSON
     return NextResponse.json(response.data);
