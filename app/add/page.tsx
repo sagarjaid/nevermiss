@@ -39,8 +39,13 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import CreateJob from '@/components/CreateJob';
+import axios from 'axios';
+import { set } from 'date-fns';
 
 export default function Dashboard() {
+  const supabase = createClient();
+
   const text = {
     heading: {
       addYoutubeChannel: 'Add YouTube Channel',
@@ -77,7 +82,7 @@ export default function Dashboard() {
         maxLength: 100,
       },
       time: {
-        name: 'Time',
+        name: 'Time of Reminder',
         required: true,
         toolTip: 'Please select time on which AI can call you',
         maxLength: 100,
@@ -117,35 +122,9 @@ export default function Dashboard() {
     },
   };
 
-  // const languages = [
-  //   'English',
-  //   'Spanish',
-  //   'French',
-  //   'Chinese',
-  //   'Hindi',
-  //   'Arabic',
-  //   'Russian',
-  //   'German',
-  //   'Japanese',
-  //   'Indonesian',
-  //   'Vietnamese',
-  //   'Thai',
-  //   'Korean',
-  //   'Tamil',
-  //   'Marathi',
-  // ];
-
   const languages = ['English', 'Spanish', 'Chinese', 'Hindi'];
-
   const repeat = ['No', 'Yes'];
-
   const aiVoices = ['Male', 'Female'];
-
-  const supabase = createClient();
-
-  const [history, setHistory] = useState([]);
-
-  const [loading, setLoading] = useState(true);
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -157,37 +136,48 @@ export default function Dashboard() {
   const [isRepeat, setIsRepeat] = useState(true); // Use boolean state
   const [isActive, setIsActive] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-
-  // const [selectedTime, setSelectedTime] = useState<string>('12:00 AM');
-
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
-  // const [selectedHour, setSelectedHour] = useState<number>(12);
-  // const [selectedMinute, setSelectedMinute] = useState<number>(0);
-  // const [selectedPeriod, setSelectedPeriod] = useState<string>('AM');
-
+  const [date, setDate] = useState<string>('');
+  const [timeZone, setTimeZone] = useState<string>('');
+  const [day, setDay] = useState<string>('');
   const [recurrenceType, setRecurrenceType] = useState<string>('');
 
   const handleRepeat = (value: string) => {
     setIsRepeat(value === 'true');
+    setRecurrenceType('');
   };
 
   const handleDateChange = (date: Date) => {
-    console.log(date, 'date');
+    console.log(date.getFullYear(), 'date');
 
+    const now = new Date();
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    setTimeZone(timeZone);
+
+    const currentDate = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+
+    const daysOfWeek = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+    const day = daysOfWeek[date.getDay()];
+
+    setDay(day);
     setSelectedDate(date);
+    setDate(`${month + 1}-${currentDate}-${year}`);
   };
 
-  // // Handle time change
-  // const handleTimeChange = (hour: number, minute: number, period: string) => {
-  //   setSelectedHour(hour);
-  //   setSelectedMinute(minute);
-  //   setSelectedPeriod(period);
-  // };
-
-  const [hour, setHour] = useState<number>(10); // Default: 10 AM
+  const [hour, setHour] = useState<number>(12); // Default: 10 AM
   const [minute, setMinute] = useState<number>(0); // Default: 00
-  const [period, setPeriod] = useState<string>('AM'); // Default: AM
+  const [period, setPeriod] = useState<string>('PM'); // Default: AM
 
   // Function to get current local time
   const getCurrentTime = () => {
@@ -236,22 +226,145 @@ export default function Dashboard() {
     setRecurrenceType(recurrence);
   };
 
-  // const handleDateTimeChange = (
-  //   date: Date,
-  //   hour: number,
-  //   minute: number,
-  //   period: string
-  // ) => {
-  //   setSelectedDate(date);
-  //   setSelectedHour(hour);
-  //   setSelectedMinute(minute);
-  //   setSelectedPeriod(period);
-  //   console.log(
-  //     `Selected DateTime: ${format(date, 'yyyy-MM-dd')} ${hour}:${
-  //       minute < 10 ? `0${minute}` : minute
-  //     } ${period}`
-  //   );
-  // };
+  interface Schedule {
+    timezone: string;
+    hours: number[]; // Array of integers (0-23, or -1 for every hour)
+    mdays: number[]; // Array of integers (1-31, or -1 for every day of the month)
+    minutes: number[]; // Array of integers (0-59, or -1 for every minute)
+    months: number[]; // Array of integers (1-12, or -1 for every month)
+    wdays: number[]; // Array of integers (0-6, or -1 for every day of the week)
+    expiresAt: number; // Expiration time in the format YYYYMMDDhhmmss, or 0 for no expiration
+  }
+
+  type RepeatInterval =
+    | 'Everyday'
+    | 'Weekdays'
+    | 'Weekends'
+    | 'Specific day'
+    | 'Every Week'
+    | 'Alternate Week'
+    | 'Every Month'
+    | 'Alternate Month'
+    | 'Every 3 Months'
+    | 'Every 6 Months'
+    | 'Every Year';
+
+  type SpecificDay =
+    | 'sunday'
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday';
+
+  const generateCrontabExpression = (
+    repeatInterval: RepeatInterval,
+    specificDays: SpecificDay[] = [],
+    hour: number = 12,
+    minutes: number = 0,
+    amPm: 'AM' | 'PM' = 'AM',
+    timezone: string = 'Asia/Kolkata',
+    expiresAt: number = 0
+  ): Schedule => {
+    // Helper function to convert 12-hour format to 24-hour format
+    const convertTo24HourFormat = (hour: number, amPm: 'AM' | 'PM'): number => {
+      if (amPm.toUpperCase() === 'PM' && hour !== 12) {
+        return hour + 12;
+      }
+      if (amPm.toUpperCase() === 'AM' && hour === 12) {
+        return 0;
+      }
+      return hour;
+    };
+
+    // Default crontab structure
+    const schedule: Schedule = {
+      timezone: timezone,
+      hours: [-1],
+      mdays: [-1],
+      minutes: [-1],
+      months: [-1],
+      wdays: [-1],
+      expiresAt: expiresAt,
+    };
+
+    // Convert hour to 24-hour format
+    const convertedHour = convertTo24HourFormat(hour, amPm);
+
+    // Set the converted hours and minutes
+    schedule.hours = [convertedHour];
+    schedule.minutes = [minutes];
+
+    // Set schedule based on repeatInterval
+    switch (repeatInterval) {
+      case 'Everyday':
+        schedule.wdays = [-1]; // Run every day
+        break;
+      case 'Weekdays':
+        schedule.wdays = [1, 2, 3, 4, 5]; // Monday to Friday
+        break;
+      case 'Weekends':
+        schedule.wdays = [0, 6]; // Sunday and Saturday
+        break;
+      case 'Specific day': {
+        // Wrap the declarations inside a block
+        const dayMap: Record<SpecificDay, number> = {
+          sunday: 0,
+          monday: 1,
+          tuesday: 2,
+          wednesday: 3,
+          thursday: 4,
+          friday: 5,
+          saturday: 6,
+        };
+
+        schedule.wdays = specificDays.map((day) => dayMap[day]); // Convert days to numeric values
+        break;
+      }
+      case 'Every Week':
+        schedule.wdays = [-1]; // Runs once a week on the same day
+        break;
+      case 'Alternate Week':
+        // Add logic to handle alternate week logic (custom implementation required)
+        break;
+      case 'Every Month':
+        schedule.mdays = [-1]; // Every month
+        break;
+      case 'Alternate Month':
+        // Add logic to handle alternate months
+        break;
+      case 'Every 3 Months':
+        schedule.months = [1, 4, 7, 10]; // Quarterly months
+        break;
+      case 'Every 6 Months':
+        schedule.months = [1, 7]; // Half-yearly months
+        break;
+      case 'Every Year':
+        schedule.months = [-1]; // Every year
+        break;
+      default:
+        throw new Error('Invalid repeatInterval');
+    }
+
+    return schedule;
+  };
+
+  // Example usage:
+  const scheduleA = generateCrontabExpression('Everyday', [], 12, 15, 'AM'); // Every day at 5:30 PM
+  // const scheduleB = generateCrontabExpression('Weekdays', [], 4, 0, 'PM'); // Weekdays at 4:00 PM
+  // const scheduleC = generateCrontabExpression(
+  //   'Specific day',
+  //   ['monday', 'wednesday'],
+  //   6,
+  //   15,
+  //   'AM'
+  // );
+  // Every Monday and Wednesday at 6:15 AM
+
+  // console.log('Schedule A:', scheduleA);
+  // console.log('Schedule B:', scheduleB);
+  // console.log('Schedule C:', scheduleC);
 
   // const getResult = async () => {
   //   setLoading(true);
@@ -280,7 +393,67 @@ export default function Dashboard() {
   };
 
   const handleClick = () => {
-    console.log('Create a Goal button clicked!');
+    fetchJobs();
+  };
+
+  let postData = {
+    phone_number: `+${phoneNumber}`,
+    task: `${persona}.${context}`,
+    language: language,
+    voice: aiVoice,
+  };
+
+  console.log(postData, 'postData');
+
+  const fetchJobs = async () => {
+    const url = 'https://api.cron-job.org/jobs';
+
+    const auth = `Bearer ${process.env.NEXT_PUBLIC_CORN_AUTH}`;
+
+    const jobData = {
+      job: {
+        enabled: true,
+        title: goalName,
+        saveResponses: true,
+        url: 'https://nevermissai.com/api/blondai',
+        auth: {
+          enable: false,
+          user: '',
+          password: '',
+        },
+        notification: {
+          onFailure: false,
+          onSuccess: false,
+          onDisable: true,
+        },
+        extendedData: {
+          headers: [] as string[],
+          body: JSON.stringify(postData),
+        },
+        type: 0,
+        requestTimeout: 30,
+        redirectSuccess: false,
+        folderId: 0,
+        schedule: scheduleA,
+        requestMethod: 1,
+      },
+    };
+
+    try {
+      // Make the GET request using Axios
+      const response = await axios.put(url, jobData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: auth,
+        },
+      });
+
+      // Handle the response
+      console.log('Job updated successfully:', response.data);
+    } catch (error) {
+      // Handle any error that occurs during the request
+      console.error('Error updating job:', error);
+    }
   };
 
   useEffect(() => {
@@ -313,20 +486,7 @@ export default function Dashboard() {
           <div className='flex w-full max-w-5xl h-screen text-xs'>
             <Navbar />
 
-            {/* <div className='flex justify-between w-full'> */}
             <div className='flex flex-col w-full lg:overflow-y-scroll'>
-              {/* <ChannelList filter={'all'} /> */}
-
-              {/* <VisaInterviewF baseInterviewQuestions={baseInterviewQuestions} /> */}
-
-              {/* <VisaInterviewThree
-                  baseInterviewQuestions={baseInterviewQuestions}
-                /> */}
-
-              {/* <VisaInterview
-                  baseInterviewQuestions={baseInterviewQuestions}
-                /> */}
-
               <div className='flex gap-2 flex-col p-4 w-full'>
                 <div className='flex flex-col justify-start items-start text-sm  xs:text-lg sdm:text-xl sm:gap-1.5 md:text-2xl p-1 border-b pb-3'>
                   <div className='font-semibold'>Add Goal +</div>
@@ -336,7 +496,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className='flex flex-col justify-start items-start text-sm  xs:text-lg sdm:text-xl gap-6 md:text-2xl p-2 pb-24'>
-                  <div className='flex text-md w-[60%] flex-col gap-2'>
+                  <div className='flex text-md w-full sdm:w-[60%] flex-col gap-2'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>Goal Name</div>
                       <TooltipProvider>
@@ -376,7 +536,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* <div className='flex w-full justify-between gap-3'> */}
-                  <div className='flex flex-col gap-2 w-[60%]'>
+                  <div className='flex flex-col gap-2 w-full sdm:w-[60%]'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.voices.name}</div>
                       <TooltipProvider>
@@ -424,7 +584,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className='flex flex-col gap-2 w-[60%]'>
+                  <div className='flex flex-col gap-2 w-full sdm:w-[60%]'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.language.name}</div>
                       <TooltipProvider>
@@ -472,7 +632,7 @@ export default function Dashboard() {
                   </div>
                   {/* </div> */}
 
-                  <div className=' flex flex-col gap-2 w-[60%]'>
+                  <div className=' flex flex-col gap-2 w-full sdm:w-[60%]'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>
                         {text.label.PhoneNumber.name}
@@ -546,7 +706,7 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className='flex text-md w-[60%] flex-col gap-2'>
+                  <div className='flex text-md w-full sdm:w-[60%] flex-col gap-2'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.persona.name}</div>
                       <TooltipProvider>
@@ -584,7 +744,7 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className='flex text-md w-[60%] flex-col gap-2'>
+                  <div className='flex text-md w-full sdm:w-[60%] flex-col gap-2'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.context.name}</div>
                       <TooltipProvider>
@@ -620,7 +780,7 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className='flex flex-col gap-3 w-full'>
+                  <div className='flex flex-col gap-3 w-fit'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.date.name}</div>
                       <TooltipProvider>
@@ -701,7 +861,7 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className='flex flex-col gap-1 w-[60%]'>
+                  <div className='flex flex-col gap-1 w-full sdm:w-[60%]'>
                     <div className='flex gap-1.5'>
                       <div className='text-sm'>{text.label.repeat.name}</div>
                       <TooltipProvider>
@@ -748,7 +908,7 @@ export default function Dashboard() {
                   </div>
 
                   {isRepeat && (
-                    <div className='flex flex-col gap-1 w-[60%]'>
+                    <div className='flex flex-col gap-1 w-full sdm:w-[60%]'>
                       <div className='flex gap-1.5'>
                         <div className='text-sm'>
                           {text.label.repeatEvery.name}
@@ -823,7 +983,27 @@ export default function Dashboard() {
                     </div>
                   </div>
 
+                  {
+                    <div className='flex flex-col text-xs p-2 gap-1 rounded-md bg-green-200'>
+                      <p>
+                        <strong>Occurrence:</strong>{' '}
+                        {recurrenceType || `Don't repeat`} on {day}
+                      </p>
+
+                      <p>
+                        <strong> At time:</strong> {hour}:{minute} {period}
+                      </p>
+                      <p>
+                        <strong>Start date:</strong> {date}
+                      </p>
+                      <p>
+                        <strong>Timezone:</strong> {timeZone}
+                      </p>
+                    </div>
+                  }
+
                   <Button onClick={handleClick}>Create a Goal</Button>
+                  <CreateJob />
                 </div>
               </div>
             </div>

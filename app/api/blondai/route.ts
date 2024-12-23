@@ -1,4 +1,5 @@
-// Import required modules
+/** @format */
+
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
@@ -9,26 +10,30 @@ export async function POST(request: Request) {
     const headers = new Headers();
     headers.set('Cache-Control', 'no-store');
 
-    // Define headers
+    // Parse the request body
+    const body = await request.json();
+
+    if (body.phone_number || body.task == undefined) {
+      // Return an error if the required fields are missing
+      return NextResponse.json(
+        { error: 'Missing required fields: phone_number, task' },
+        { status: 400 }
+      );
+    }
+
+    // Define the headers for the API call
     const apiHeaders = {
       Authorization: process.env.NEXT_PUBLIC_BLOND_AUTH,
     };
 
-    // const data: Record<string, any> = {
-    //   phone_number: '+918898720799',
-    //   task: 'Act as Gym couch and remind caller to go to the gym and track the progress. Remind me to go to the gym and track my progress by asking questions like are you hitting the gym today? what exercise you did do on the last day? what are you playing today? wish me the best day wait for 2 seconds and hangup the call.',
-    //   language: 'en',
-    //   voice: 'matt',
-    // };
-
-    // Define the data payload for the API call
+    // Create the data object for the API call based on the received body
     const data: Record<string, any> = {
-      phone_number: '+918898720799',
+      phone_number: body.phone_number,
       from: null,
-      task: 'Act as Gym couch and remind caller to go to the gym and track the progress. Remind me to go to the gym and track my progress by asking questions like are you hitting the gym today? what exercise you did do on the last day? what are you playing today? wish me the best day wait for 2 seconds and hangup the call.',
+      task: body.task,
       model: 'enhanced',
-      language: 'en',
-      voice: 'matt',
+      language: body.language === 'English' ? 'en' : 'en',
+      voice: body.voice === 'Male' ? 'matt' : 'matt',
       voice_settings: {},
       pathway_id: null,
       local_dialing: false,
@@ -56,14 +61,14 @@ export async function POST(request: Request) {
       calendly: {},
     };
 
-    // Send POST request to the external API
+    // Send the POST request to the external API
     const response = await axios.post(
       'https://us.api.bland.ai/v1/calls',
       data,
       { headers: apiHeaders }
     );
 
-    // Return the response as JSON
+    // Return the response from the external API as JSON
     return NextResponse.json(response.data);
   } catch (error: any) {
     console.error('Error making the API call:', error);
@@ -74,10 +79,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-// import { NextResponse } from 'next/server';
-
-// // This is an example of a Next.js 14 API route using the new app router.
-// export async function GET() {
-//   return NextResponse.json({ message: 'Hello from Next.js API Route!' });
-// }
