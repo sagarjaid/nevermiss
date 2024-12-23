@@ -15,10 +15,10 @@ export async function POST(request: Request) {
 
     console.log(body, 'body');
 
-    if (body.phoneNumber || body.task == undefined) {
+    // Validate required fields
+    if (!body.phoneNumber || !body.task) {
       // Return an error if the required fields are missing
       console.log('400 got called');
-
       return NextResponse.json(
         { error: 'Missing required fields: phone_number, task' },
         { status: 400 }
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       { headers: apiHeaders }
     );
 
-    console.log('called placed successfully', response.data);
+    console.log('Call placed successfully', response.data);
 
     // Return the response from the external API as JSON
     return NextResponse.json(response.data);
